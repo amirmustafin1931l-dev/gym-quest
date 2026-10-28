@@ -3,3 +3,4 @@ dist
 .DS_Store
 .env
 supabase/.db-password
+supabase/.temp/
