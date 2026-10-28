@@ -66,12 +66,14 @@ const prescribe = (slot: Slot, exId: string, def: Exercise, workouts: Workout[],
     if (!last) {
       const best = exerciseBests(exerciseHistory(workouts, exId, def)).bestE1rm;
       if (best) p = { ...base, weight: roundTo(best / (1 + (slot.lo + slot.rir) / 30), step), note: `${slot.why}. Стартовый вес от твоего расчётного 1ПМ` };
-      else p = { ...base, weight: null, note: `${slot.why}. Подбери вес так, чтобы в последнем подходе оставалось ${slot.rir} повтора в запасе` };
+      else p = { ...base, weight: null, note: `${slot.why}. Подбери вес так, чтобы в последнем подходе оставался запас ${slot.rir} повт.` };
     } else {
       const W = Math.max(...last.map((s) => s.weight ?? 0));
-      const reps = last.map((s) => s.reps ?? 0);
+      const atTop = last.filter((s) => (s.weight ?? 0) >= W);
+      const reps = atTop.map((s) => s.reps ?? 0);
       const prevBelow = prev ? Math.min(...prev.map((s) => s.reps ?? 0)) < slot.lo : false;
-      if (Math.min(...reps) >= slot.hi) p = { ...base, weight: roundTo(W + inc, step), reps: slot.lo, note: `+${fmtKg(inc)} кг: прошлый раз все подходы на ${slot.hi}` };
+      if (atTop.length < slot.sets && Math.min(...reps) >= slot.lo) p = { ...base, weight: W, reps: slot.lo, note: `Закрепи ${fmtKg(W)} кг во всех ${slot.sets} подходах — в прошлый раз было ${atTop.length}` };
+      else if (Math.min(...reps) >= slot.hi) p = { ...base, weight: roundTo(W + inc, step), reps: slot.lo, note: `+${fmtKg(inc)} кг: прошлый раз все подходы на ${slot.hi}` };
       else if (Math.min(...reps) >= slot.lo) p = { ...base, weight: W, reps: Math.min(slot.hi, Math.min(...reps) + 1), note: `Тот же вес, добери до ${Math.min(slot.hi, Math.min(...reps) + 1)} повторов во всех подходах` };
       else if (prevBelow) p = { ...base, weight: roundTo(W * 0.9, step), reps: slot.lo, note: 'Два раза не дотянул до нижней границы — откат 10% и снова вверх' };
       else p = { ...base, weight: W, reps: slot.lo, note: `Тот же вес, цель — ${slot.lo} повторов во всех подходах` };
