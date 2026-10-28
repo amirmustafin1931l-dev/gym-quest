@@ -25,7 +25,66 @@ npm run dev
 
 Сборка: `npm run build` → папка `dist/`.
 
-## Как подключить к Telegram
+## Запуск в Telegram и мультиплеер — пошагово
+
+Нужны три бесплатные вещи: бот в Telegram, HTTPS-хостинг для сайта и проект Supabase для банды. На всё уходит около получаса.
+
+### Шаг 1. Бот и Mini App в BotFather
+
+1. В Telegram открой **@BotFather** → `/newbot` → придумай имя и username бота (например `gymquest_bot`). BotFather выдаст **токен** — сохрани, он понадобится для Supabase (никому не показывай).
+2. `/newapp` → выбери бота → название «GymQuest», описание, картинка 640×360, **короткое имя** приложения (например `app`). URL пока можно указать любой — заменим после шага 2.
+3. Запомни: имя бота и короткое имя — это `VITE_BOT_NAME` и `VITE_APP_NAME`.
+
+### Шаг 2. Хостинг на GitHub Pages
+
+1. Создай репозиторий на GitHub и отправь код:
+
+```bash
+gh repo create gym-quest --public --source=. --push
+```
+
+2. В репозитории: **Settings → Pages → Source: GitHub Actions**.
+3. **Settings → Secrets and variables → Actions → Variables** → добавь `VITE_BOT_NAME`, `VITE_APP_NAME` (и позже `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` из шага 3).
+4. Workflow `.github/workflows/deploy.yml` соберёт и опубликует сайт при каждом push в `main`. Адрес будет вида `https://<логин>.github.io/gym-quest/`.
+5. Вернись в BotFather: `/myapps` → приложение → Edit Web App URL → вставь этот адрес. Ссылка `https://t.me/<бот>/<app>` открывает игру внутри Telegram.
+
+### Шаг 3. Supabase для банды (друзья и рейтинг)
+
+1. Зарегистрируйся на supabase.com → **New project** (регион поближе, пароль базы сохрани).
+2. **SQL Editor** → вставь содержимое `supabase/schema.sql` → Run. Это таблицы профилей и дружбы с правилами доступа.
+3. **Project Settings → API**: скопируй `Project URL` и `anon public` ключ → это `VITE_SUPABASE_URL` и `VITE_SUPABASE_ANON_KEY` (они не секретные, их можно класть в переменные GitHub). Там же скопируй **JWT Secret** — он секретный.
+4. Функция входа через Telegram. В терминале в папке проекта:
+
+```bash
+npx supabase login
+```
+
+```bash
+npx supabase link --project-ref <ref проекта из URL>
+```
+
+```bash
+npx supabase secrets set BOT_TOKEN=<токен бота> JWT_SECRET=<JWT Secret>
+```
+
+```bash
+npx supabase functions deploy tg-auth --no-verify-jwt
+```
+
+5. Для локальной отладки в обычном браузере (без Telegram) добавь секрет `DEV_LOGIN_SECRET=<любая строка>` той же командой и пропиши ту же строку в `.env` как `VITE_DEV_LOGIN_SECRET`.
+
+### Шаг 4. Переменные
+
+Скопируй `.env.example` в `.env` для локальной разработки и добавь те же значения в Variables репозитория GitHub (шаг 2.3). Сделай push — через минуту игра в Telegram увидит банду.
+
+### Как это устроено
+
+- Telegram передаёт приложению подписанные данные пользователя (`initData`). Функция `tg-auth` проверяет подпись токеном бота, находит или создаёт профиль и выдаёт токен доступа Supabase. Паролей и регистрации нет.
+- В базе хранится только **публичный снимок героя**: имя, внешность, экипировка, уровень, Respect, тоннаж, рекорды в базе, серия, трофеи, итоги недели. Сами тренировки остаются на устройстве и в бэкапе Telegram.
+- Друзья добавляются по ссылке `t.me/<бот>/<app>?startapp=f_<id>`: друг открывает её в Telegram, и вы оказываетесь в одной банде.
+- Демо-режим без сервера: `VITE_SOCIAL_MOCK=1` в `.env` показывает выдуманную банду.
+
+## Как подключить к Telegram (кратко)
 
 Mini App — это обычный сайт по HTTPS, который Telegram открывает внутри клиента.
 

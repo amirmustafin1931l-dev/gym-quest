@@ -13,7 +13,9 @@ interface TgWebApp {
   expand(): void;
   colorScheme: 'light' | 'dark';
   themeParams: Record<string, string>;
-  initDataUnsafe?: { user?: { first_name?: string; last_name?: string; username?: string } };
+  initData?: string;
+  initDataUnsafe?: { user?: { id?: number; first_name?: string; last_name?: string; username?: string }; start_param?: string };
+  openTelegramLink?(url: string): void;
   CloudStorage?: TgCloudStorage;
   HapticFeedback?: {
     impactOccurred(style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft'): void;
@@ -107,3 +109,8 @@ export const cloudLoad = async (): Promise<string | null> => {
   if (parts.some((x) => !x)) throw new Error('Бэкап в облаке повреждён');
   return parts.join('');
 };
+
+export const tgInitData = () => tg?.initData ?? '';
+export const tgUserId = () => tg?.initDataUnsafe?.user?.id;
+export const tgStartParam = () => tg?.initDataUnsafe?.start_param ?? new URLSearchParams(location.search).get('startapp') ?? '';
+export const openTelegramLink = (url: string) => { try { if (tg?.openTelegramLink) tg.openTelegramLink(url); else window.open(url, '_blank'); } catch { window.open(url, '_blank'); } };

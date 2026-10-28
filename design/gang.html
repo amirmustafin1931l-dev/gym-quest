@@ -1,0 +1,105 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>GymQuest — Банда</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rubik+Spray+Paint&family=Bowlby+One+SC&family=Oswald:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#161616;color:#eee;font-family:Inter,system-ui;padding:20px}
+h1{font:800 20px Inter;margin:0 0 4px}.sub{color:#999;margin-bottom:14px;font-size:13px}
+.row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.label{font:700 13px Inter;margin:0 0 8px;color:#fff}
+.phone{width:375px;height:812px;overflow:hidden;position:relative;border-radius:36px;border:6px solid #222;box-shadow:0 20px 60px rgba(0,0,0,.6);flex-shrink:0;background:#0d0c0b}
+.scr{position:absolute;inset:0;overflow:hidden}
+.mono{font-family:'Rubik Mono One'}.bowl{font-family:'Bowlby One SC'}.spray{font-family:'Rubik Spray Paint'}.osw{font-family:Oswald;letter-spacing:.1em;text-transform:uppercase}
+.gold{background:linear-gradient(#fff2b0,#f7b733 55%,#c8690a);-webkit-background-clip:text;color:transparent;filter:drop-shadow(3px 3px 0 #000)}
+.tag{font-family:'Rubik Spray Paint';color:#f5c542;text-shadow:3px 3px 0 #000,0 0 14px rgba(245,197,66,.45)}
+.stencil{font:10px 'Rubik Mono One';color:#fff;background:#111;display:inline-block;padding:4px 8px;border:2px solid #fff;letter-spacing:.02em}
+.stencil.g{border-color:#49b84a;color:#8ff08a}.stencil.w{border-color:#ff9f1c;color:#ffb347}.stencil.y{border-color:#f5c542;color:#f5c542}
+.hud{position:absolute;right:14px;top:14px;text-align:right;line-height:1}
+.hud .clock{font:18px 'Rubik Mono One';color:#fff;-webkit-text-stroke:1px #000;text-shadow:2px 2px 0 #000}
+.hud .money{font:18px 'Rubik Mono One';color:#49b84a;-webkit-text-stroke:1px #000;text-shadow:2px 2px 0 #000;margin-top:4px}
+.hud .bars{margin-top:6px;display:grid;gap:3px;justify-items:end}.hud .b{width:120px;height:9px;background:rgba(0,0,0,.65);border:2px solid #000}.hud .b i{display:block;height:100%}
+.hud .stars{font-size:15px;letter-spacing:2px;color:#f5c542;-webkit-text-stroke:.8px #000;margin-top:4px}.hud .stars b{color:rgba(0,0,0,.55)}
+.hud .lbl{font:9px Oswald;letter-spacing:.14em;text-transform:uppercase;color:#ddd;text-shadow:1px 1px 0 #000;margin-top:2px}
+.radar{position:absolute;left:14px;bottom:250px;width:100px;height:100px;border-radius:50%;background:#0d1f0d;border:3px solid #111;box-shadow:0 0 0 2px #d9d9d9,0 6px 16px rgba(0,0,0,.6);overflow:hidden}
+.pm{background:rgba(0,0,0,.82);border:3px solid #000;box-shadow:inset 0 0 0 1px #3a342c;padding:10px 12px}
+.pm-row{display:grid;grid-template-columns:86px 1fr 32px;gap:10px;align-items:center;font:10px 'Rubik Mono One';color:#fff;margin:5px 0}
+.pm-row .bar{height:9px;background:#1a1a1a;border:2px solid #000;box-shadow:inset 0 0 0 1px #333}.pm-row .bar i{display:block;height:100%}.pm-row .v{text-align:right;color:#f5c542}
+.pm-tabs{display:flex;gap:14px;font:11px 'Rubik Mono One';color:#999}.pm-tabs .on{color:#fff;border-bottom:3px solid #f5c542;padding-bottom:3px}
+.cta{height:50px;background:linear-gradient(#f7c843,#d9930f);color:#1a1200;font:15px 'Rubik Mono One';display:flex;align-items:center;justify-content:center;border:3px solid #000;box-shadow:0 4px 0 #000}
+.cta.dark{background:#111;color:#f5c542;border-color:#f5c542;box-shadow:0 4px 0 #000;font-size:12px}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:70px;display:flex;justify-content:space-around;align-items:center;padding-bottom:10px;background:#000;border-top:3px solid #222;color:#999}
+.tabs div{font:9px 'Rubik Mono One';text-align:center;text-transform:uppercase}.tabs i{display:block;font-size:19px;font-style:normal;margin-bottom:4px}.tabs .on{color:#f5c542}
+.halftone{position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.28) 1.2px,transparent 1.4px);background-size:7px 7px;pointer-events:none;opacity:.6}
+.set{display:grid;grid-template-columns:20px 1fr 1fr 22px;gap:8px;align-items:center;margin-top:6px}
+.set .in{height:36px;background:#000;border:2px solid #444;display:flex;align-items:center;justify-content:center;font:15px 'Rubik Mono One';color:#fff}
+.set .n{font:10px 'Rubik Mono One';color:#999;text-align:center}.set .x{color:#999;text-align:center}
+.bars2{display:flex;align-items:flex-end;gap:5px;height:96px;padding-top:8px}.bars2 i{flex:1;background:#f5c542;border:2px solid #000;border-bottom:0;display:block}
+.lb{display:grid;grid-template-columns:28px 40px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:2px solid #1a1a1a;font:11px 'Rubik Mono One';color:#fff}
+.lb .pos{color:#f5c542}.lb .me{background:rgba(245,197,66,.12)}.lb .r{color:#49b84a;text-align:right}
+.mini{width:40px;height:40px;background:#1a1816;border:2px solid #000;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+</style></head><body>
+<h1>GymQuest — мультиплеер: экраны «Банды»</h1><div class="sub">Рейтинг друзей и общий топ, профиль друга, приглашение по ссылке. Стиль тот же.</div>
+<div class="row" id="phones"></div>
+<script src="figure.js?v=4"></script><script>
+
+const M = { today:['chest','triceps','front_delts','quads','glutes'], lagging:['lats','upper_back','calves'], load:{biceps:.6,forearms:.3,abs:.5,side_delts:.4,hamstrings:.5} };
+const fig = (b, o) => drawFigure(b, { gear:'street', ...o });
+const sunset = (h=812, top=0) => `<svg viewBox="0 0 375 ${h}" width="375" height="${h}" style="position:absolute;left:0;top:${top}px" xmlns="http://www.w3.org/2000/svg"><defs>
+<linearGradient id="sky${h}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2b1b4d"/><stop offset=".35" stop-color="#8a2d5e"/><stop offset=".6" stop-color="#e8692a"/><stop offset=".78" stop-color="#f7b733"/><stop offset=".8" stop-color="#1a1410"/><stop offset="1" stop-color="#0d0c0b"/></linearGradient>
+<radialGradient id="sun${h}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff0b0"/><stop offset=".6" stop-color="#f7b733"/><stop offset="1" stop-color="#f7b733" stop-opacity="0"/></radialGradient></defs>
+<rect width="375" height="${h}" fill="url(#sky${h})"/><circle cx="270" cy="${h*0.62}" r="80" fill="url(#sun${h})"/><circle cx="270" cy="${h*0.62}" r="46" fill="#ffd877"/>
+<g fill="#120d16">${[0,40,70,110,150,200,250,300,340].map((x,i)=>`<rect x="${x}" y="${h*0.78-20-(i%3)*18-(i%2)*10}" width="${30+(i%2)*18}" height="120"/>`).join('')}</g>
+<g fill="#0a0708"><path d="M40 ${h*0.8} q6 -90 -10 -150 l14 0 q10 60 8 150z"/><g transform="translate(36 ${h*0.8-150})">${[0,45,90,135,180,225,270,315].map(a=>`<ellipse rx="34" ry="8" transform="rotate(${a}) translate(26 0)"/>`).join('')}</g>
+<path d="M330 ${h*0.8} q-4 -110 14 -170 l12 0 q-12 60 -12 170z"/><g transform="translate(343 ${h*0.8-170})">${[0,45,90,135,180,225,270,315].map(a=>`<ellipse rx="38" ry="9" transform="rotate(${a}) translate(30 0)"/>`).join('')}</g></g>
+<rect y="${h*0.8}" width="375" height="${h*0.2}" fill="#0d0c0b"/><path d="M0 ${h*0.8} h375" stroke="#f7b733" stroke-width="2" opacity=".5"/></svg>`;
+const radarSvg = () => `<svg viewBox="0 0 112 112" width="100" height="100"><circle cx="56" cy="56" r="56" fill="#13331a"/>${[0,1,2,3].map(i=>`<circle cx="56" cy="56" r="${14+i*13}" fill="none" stroke="rgba(255,255,255,.12)"/>`).join('')}<path d="M56 4 V108 M4 56 H108" stroke="rgba(255,255,255,.12)"/><polygon points="56,14 88,40 92,70 56,96 20,80 24,34" fill="rgba(245,197,66,.35)" stroke="#f5c542" stroke-width="2"/><circle cx="56" cy="56" r="4" fill="#fff"/>
+<text x="56" y="10" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">ГРУДЬ</text><text x="98" y="46" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">РУКИ</text><text x="98" y="78" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">НОГИ</text><text x="56" y="108" font-size="8" fill="#ff9f1c" text-anchor="middle" font-family="Oswald">СПИНА</text><text x="14" y="86" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">КОР</text><text x="14" y="38" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">ПЛЕЧИ</text></svg>`;
+const hud = (clock='17:49') => `<div class="hud"><div class="clock">${clock}</div><div class="money">$00003418</div><div class="lbl">тоннаж, кг</div>
+ <div class="bars"><div class="b"><i style="width:62%;background:#b4342c"></i></div><div class="b"><i style="width:74%;background:#e8e8e8"></i></div><div class="b"><i style="width:31%;background:#3a8fd6"></i></div></div><div class="lbl">respect · дисциплина · выносливость</div><div class="stars">★★★<b>★★</b></div></div>`;
+const tabs = (on) => `<div class="tabs">${[['👤','Герой'],['🏋️','Миссия'],['👥','Банда'],['📈','Статы'],['📟','Тренер']].map(([i,n],k)=>`<div class="${k===on?'on':''}"><i>${i}</i>${n}</div>`).join('')}</div>`;
+const P = [];
+const gang = [['1','Дима',24,'8 120',1,'gang'],['2','Лёха',19,'6 480',.78,'pro'],['3','Саша',15,'5 210',.6,'street'],['4','Амир',12,'3 418',.55,'street',true],['5','Марк',9,'2 950',.35,'pro'],['6','Ваня',7,'2 100',.25,'gang'],['7','Кирилл',6,'1 800',.2,'street']];
+const row = ([p,n,l,t,b,g,me]) => `<div class="lb ${me?'me':''}"><span class="pos">${p}</span><div class="mini">${drawFigure(b,{gear:g,stage:stageOf(b),w:38,h:66,shadow:false})}</div><div><div>${n}${me?' (ты)':''}</div><div class="osw" style="font-size:8px;color:#999">ур.${l} · ${['Монстр','Бодибилдер','Качок','Качок','Подтянутый','Подтянутый','Подтянутый'][p-1]}</div></div><span class="r">${t} кг</span></div>`;
+
+P.push(['1 · Банда — рейтинг', `<div class="scr">${sunset(300)}<div style="position:absolute;left:0;right:0;top:230px;bottom:0;background:#0d0c0b"></div><div class="halftone" style="opacity:.2"></div>
+ <div style="position:absolute;left:14px;top:12px"><div class="tag" style="font-size:30px;line-height:1">БАНДА</div><div style="margin-top:6px"><span class="stencil y">GROVE STREET GYM · 7 ЧЕЛ.</span></div></div>
+ <div class="hud"><div class="clock">#4</div><div class="lbl">моё место</div><div class="money" style="font-size:14px">+2 ↑</div><div class="lbl">за неделю</div></div>
+ <div style="position:absolute;left:14px;right:14px;top:104px">
+  <div class="pm-tabs" style="margin-bottom:8px"><span class="on">ДРУЗЬЯ</span><span>ОБЩИЙ ТОП</span><span>НЕДЕЛЯ</span></div>
+  <div class="row" style="display:flex;gap:6px;margin-bottom:8px"><span class="stencil g" style="font-size:8px">RESPECT</span><span class="stencil" style="font-size:8px">ТОННАЖ</span><span class="stencil" style="font-size:8px">СЕРИЯ</span><span class="stencil" style="font-size:8px">ЖИМ</span><span class="stencil" style="font-size:8px">ПРИСЕД</span></div>
+  <div class="pm" style="padding:4px 12px">${gang.map(row).join('')}</div>
+  <div class="pm" style="margin-top:10px;display:flex;align-items:center;gap:10px"><span style="font-size:22px">🏆</span><div style="flex:1"><div class="mono" style="font-size:10px;color:#f5c542">СОРЕВНОВАНИЕ НЕДЕЛИ</div><div class="osw" style="font-size:9px;color:#ccc">Кто больше поднимет до воскресенья · лидер Дима 2 400 кг · ты 1 800 кг</div></div></div>
+ </div>
+ <div style="position:absolute;left:14px;right:14px;bottom:80px;display:flex;gap:10px"><div class="cta dark" style="flex:1">🔗 ПОЗВАТЬ В БАНДУ</div><div class="cta" style="flex:1">🌍 ОБЩИЙ ТОП</div></div>
+ ${tabs(2)}</div>`]);
+
+P.push(['2 · Профиль друга', `<div class="scr">${sunset()}<div class="halftone" style="opacity:.25"></div>
+ <div style="position:absolute;left:14px;top:12px"><div class="stencil" style="font-size:9px;margin-bottom:8px">← БАНДА</div><div class="tag" style="font-size:34px;line-height:1">ДИМА</div><div style="margin-top:6px"><span class="stencil y">ур.24 · стадия 5/5 · монстр массы</span></div></div>
+ <div class="hud"><div class="clock">#1</div><div class="lbl">в банде</div><div class="money">$00008120</div><div class="lbl">тоннаж, кг</div><div class="stars">★★★★★</div><div class="lbl">5 недель подряд</div></div>
+ <div style="position:absolute;left:50%;top:124px;transform:translateX(-50%)">${drawFigure(1,{gear:'gang',stage:5,w:240,h:416})}</div>
+ <div style="position:absolute;right:14px;top:300px;display:grid;gap:4px;justify-items:end"><span class="stencil g" style="font-size:8px">ВЧЕРА: ГРУДЬ</span><span class="stencil" style="font-size:8px">24 ТРОФЕЯ</span><span class="stencil" style="font-size:8px">🔥 142 МИССИИ</span></div>
+ <div class="pm" style="position:absolute;left:14px;right:14px;bottom:142px">
+  <div class="pm-tabs" style="margin-bottom:6px"><span class="on">РЕКОРДЫ</span><span>СТАТЫ</span><span>ТРОФЕИ</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+   <div style="background:#000;border:2px solid #3a342c;padding:8px"><div class="mono" style="font-size:14px;color:#fff">120</div><div class="osw" style="font-size:8px;color:#999">жим · ты 82.5</div></div>
+   <div style="background:#000;border:2px solid #3a342c;padding:8px"><div class="mono" style="font-size:14px;color:#fff">170</div><div class="osw" style="font-size:8px;color:#999">присед · ты 100</div></div>
+   <div style="background:#000;border:2px solid #3a342c;padding:8px"><div class="mono" style="font-size:14px;color:#fff">200</div><div class="osw" style="font-size:8px;color:#999">тяга · ты 120</div></div>
+  </div>
+ </div>
+ <div style="position:absolute;left:14px;right:14px;bottom:80px;display:flex;gap:10px"><div class="cta dark" style="flex:1">⚔️ ВЫЗВАТЬ НА НЕДЕЛЮ</div><div class="cta dark" style="width:110px;color:#ff5c5c;border-color:#c8322a">УБРАТЬ</div></div>
+ ${tabs(2)}</div>`]);
+
+P.push(['3 · Приглашение', `<div class="scr">${sunset()}<div class="halftone" style="opacity:.25"></div>
+ <div style="position:absolute;left:14px;top:12px"><div class="tag" style="font-size:30px;line-height:1">ПОЗВАТЬ</div><div style="margin-top:6px"><span class="stencil y">В БАНДУ</span></div></div>
+ <div style="position:absolute;left:50%;top:110px;transform:translateX(-50%)">${drawFigure(.55,{gear:'street',stage:3,w:200,h:346})}</div>
+ <div class="pm" style="position:absolute;left:14px;right:14px;top:470px;text-align:center">
+  <div class="mono" style="font-size:10px;color:#f5c542;margin-bottom:6px">ТВОЯ ССЫЛКА</div>
+  <div style="background:#000;border:2px solid #444;padding:10px;font:11px Oswald;color:#fff;letter-spacing:.04em;word-break:break-all">t.me/gymquest_bot/app?startapp=f_7731</div>
+  <div class="osw" style="font-size:9px;color:#999;margin-top:8px">Друг откроет ссылку в Telegram — и вы сразу в одной банде. Он увидит твоего качка, ты — его.</div>
+ </div>
+ <div style="position:absolute;left:14px;right:14px;bottom:80px;display:grid;gap:10px"><div class="cta">📨 ОТПРАВИТЬ В TELEGRAM</div><div class="cta dark">📋 СКОПИРОВАТЬ ССЫЛКУ</div></div>
+ ${tabs(2)}</div>`]);
+
+const only = new URLSearchParams(location.search).get('only');
+const host = document.getElementById('phones');
+P.forEach(([l, html], i) => { if (only && String(i + 1) !== only) return; host.insertAdjacentHTML('beforeend', `<div>${only ? '' : `<div class="label">${l}</div>`}<div class="phone" ${only ? 'style="border:0;border-radius:0;box-shadow:none"' : ''}>${html}</div></div>`); });
+if (only) { document.body.style.padding = '0'; document.querySelectorAll('h1,.sub').forEach(e => e.style.display = 'none'); }
+</script></body></html>
