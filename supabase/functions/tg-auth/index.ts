@@ -1,10 +1,11 @@
 // Вход по данным Telegram Mini App.
-// Проверяет подпись initData токеном бота, создаёт/находит профиль и выдаёт JWT Supabase.
-// Секреты (supabase secrets set): BOT_TOKEN, JWT_SECRET (= JWT Secret проекта), DEV_LOGIN_SECRET (необязательно, для отладки в браузере)
+// Проверяет подпись initData токеном бота, создаёт/находит пользователя Supabase Auth и профиль,
+// выдаёт сессию через magic-link без отправки писем.
+// Секреты (supabase secrets set): BOT_TOKEN. Необязательно: DEV_LOGIN_SECRET для отладки в браузере.
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { create, getNumericDate } from 'https://deno.land/x/djwt@v3.0.2/mod.ts';
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' };
+const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 const enc = new TextEncoder();
 
 async function hmac(key: ArrayBuffer | Uint8Array, data: string) {
@@ -20,12 +21,11 @@ async function verifyInitData(initData: string, botToken: string) {
   params.delete('hash');
   const dataCheck = [...params.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => `${k}=${v}`).join('\n');
   const secret = await hmac(enc.encode('WebAppData'), botToken);
-  const sig = hex(await hmac(secret, dataCheck));
-  if (sig !== hash) return null;
+  if (hex(await hmac(secret, dataCheck)) !== hash) return null;
   const authDate = Number(params.get('auth_date') || 0);
-  if (Date.now() / 1000 - authDate > 60 * 60 * 24) return null; // старше суток
+  if (Date.now() / 1000 - authDate > 60 * 60 * 24) return null;
   const user = JSON.parse(params.get('user') || 'null');
-  return user ? { id: Number(user.id), first_name: user.first_name as string, last_name: user.last_name as string | undefined, username: user.username as string | undefined } : null;
+  return user ? { id: Number(user.id), first_name: String(user.first_name ?? ''), last_name: user.last_name as string | undefined, username: user.username as string | undefined } : null;
 }
 
 Deno.serve(async (req) => {
@@ -33,30 +33,47 @@ Deno.serve(async (req) => {
   try {
     const { initData, dev } = await req.json();
     const botToken = Deno.env.get('BOT_TOKEN') ?? '';
-    const jwtSecret = Deno.env.get('JWT_SECRET') ?? '';
     let user: { id: number; first_name: string; last_name?: string; username?: string } | null = null;
-    if (dev && Deno.env.get('DEV_LOGIN_SECRET') && dev.secret === Deno.env.get('DEV_LOGIN_SECRET')) {
-      user = { id: Number(dev.id), first_name: dev.name || 'Dev' };
-    } else {
-      user = await verifyInitData(initData || '', botToken);
-    }
-    if (!user) return new Response(JSON.stringify({ error: 'bad initData' }), { status: 401, headers: { ...cors, 'Content-Type': 'application/json' } });
+    const devSecret = Deno.env.get('DEV_LOGIN_SECRET');
+    if (dev && devSecret && dev.secret === devSecret) user = { id: Number(dev.id), first_name: dev.name || 'Dev' };
+    else user = await verifyInitData(initData || '', botToken);
+    if (!user) return json({ error: 'bad initData' }, 401);
 
-    const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+    const url = Deno.env.get('SUPABASE_URL')!;
+    const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
+    const email = `tg_${user.id}@gymquest.local`;
     const name = [user.first_name, user.last_name].filter(Boolean).join(' ').slice(0, 40) || 'Атлет';
-    const { data: existing } = await admin.from('profiles').select('*').eq('tg_id', user.id).maybeSingle();
+
+    // пользователь Auth: создать, если нет
+    let uid: string | undefined;
+    const created = await admin.auth.admin.createUser({ email, email_confirm: true, user_metadata: { tg_id: user.id, name } });
+    if (created.data.user) uid = created.data.user.id;
+    else {
+      const { data: prof } = await admin.from('profiles').select('id').eq('tg_id', user.id).maybeSingle();
+      uid = prof?.id;
+      if (!uid) { // пользователь есть, профиля нет: ищем по email
+        const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+        uid = list?.users.find((u) => u.email === email)?.id;
+      }
+    }
+    if (!uid) throw new Error('auth user not found');
+
+    // профиль
+    const { data: existing } = await admin.from('profiles').select('*').eq('id', uid).maybeSingle();
     let profile = existing;
     if (!profile) {
-      const { data, error } = await admin.from('profiles').insert({ tg_id: user.id, name, username: user.username ?? null }).select('*').single();
+      const { data, error } = await admin.from('profiles').insert({ id: uid, tg_id: user.id, name, username: user.username ?? null }).select('*').single();
       if (error) throw error; profile = data;
-    } else if (user.username && profile.username !== user.username) {
-      await admin.from('profiles').update({ username: user.username }).eq('id', profile.id);
-    }
+    } else if (user.username && profile.username !== user.username) await admin.from('profiles').update({ username: user.username }).eq('id', uid);
 
-    const key = await crypto.subtle.importKey('raw', enc.encode(jwtSecret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
-    const token = await create({ alg: 'HS256', typ: 'JWT' }, { sub: profile.id, role: 'authenticated', aud: 'authenticated', tg_id: user.id, exp: getNumericDate(60 * 60 * 24 * 7) }, key);
-    return new Response(JSON.stringify({ token, profile }), { headers: { ...cors, 'Content-Type': 'application/json' } });
+    // сессия через magic-link без письма
+    const link = await admin.auth.admin.generateLink({ type: 'magiclink', email });
+    if (link.error) throw link.error;
+    const anon = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, { auth: { persistSession: false } });
+    const verified = await anon.auth.verifyOtp({ token_hash: link.data.properties.hashed_token, type: 'magiclink' });
+    if (verified.error || !verified.data.session) throw verified.error ?? new Error('no session');
+    return json({ token: verified.data.session.access_token, profile });
   } catch (e) {
-    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } });
+    return json({ error: String((e as Error).message ?? e) }, 500);
   }
 });
