@@ -51,8 +51,9 @@ export interface SocialApi {
 
 const env = import.meta.env as Record<string, string | undefined>;
 export const SUPABASE_URL = env.VITE_SUPABASE_URL; export const SUPABASE_ANON = env.VITE_SUPABASE_ANON_KEY;
-export const BOT_NAME = env.VITE_BOT_NAME || 'gymquest_bot'; export const APP_NAME = env.VITE_APP_NAME || 'app';
-export const inviteLink = (tgId: number) => `https://t.me/${BOT_NAME}/${APP_NAME}?startapp=f_${tgId}`;
+export const BOT_NAME = env.VITE_BOT_NAME || 'gymquest_game_bot'; export const APP_NAME = env.VITE_APP_NAME || '';
+/** Главный Mini App бота: t.me/<бот>?startapp=…; именованный: t.me/<бот>/<app>?startapp=… */
+export const inviteLink = (tgId: number) => `https://t.me/${BOT_NAME}${APP_NAME ? '/' + APP_NAME : ''}?startapp=f_${tgId}`;
 export const socialMode = (): 'supabase' | 'mock' | 'off' => (env.VITE_SOCIAL_MOCK ? 'mock' : SUPABASE_URL && SUPABASE_ANON ? 'supabase' : 'off');
 
 const METRIC_COL: Record<Metric, string> = { xp: 'xp', tonnage: 'tonnage', streak: 'streak', bench: 'bests->bench', squat: 'bests->squat', deadlift: 'bests->deadlift' };
