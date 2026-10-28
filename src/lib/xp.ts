@@ -38,6 +38,8 @@ export const computeWorkoutXp = (
   lines.push({ label: 'Тренировка завершена', xp: 50 });
   lines.push({ label: `Подходы ×${sets}`, xp: Math.min(100, sets * 2) });
 
+  if (w.task) lines.push({ label: w.task.source === 'coach' ? `Задание тренера: ${w.task.title}` : `Задание программы: ${w.task.title}`, xp: 50 });
+
   const ton = workoutTonnage(w, ex);
   if (ton > 0) lines.push({ label: `Тоннаж ${Math.round(ton).toLocaleString('ru-RU')} кг`, xp: Math.min(300, Math.round(ton / 100)) });
 

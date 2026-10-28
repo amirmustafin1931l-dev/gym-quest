@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useStore } from './store';
-import { buildSnapshot, createSocial, socialMode, type Metric, type RemoteProfile, type SocialApi } from './lib/social';
+import { buildSnapshot, createSocial, socialMode, type CoachReply, type CoachRequest, type Metric, type RemoteProfile, type SocialApi } from './lib/social';
 import { tgStartParam } from './lib/telegram';
 import { toast } from './lib/toast';
 
@@ -12,6 +12,7 @@ interface Social {
   list: (scope: 'friends' | 'global' | 'week', metric: Metric) => Promise<RemoteProfile[]>;
   addFriendByTg: (tg: number) => Promise<RemoteProfile | null>;
   removeFriend: (id: string) => Promise<void>;
+  coach: (req: CoachRequest) => Promise<CoachReply>;
 }
 const Ctx = createContext<Social | null>(null);
 
@@ -64,6 +65,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     },
     addFriendByTg: async (tg) => { if (!api) return null; const f = await api.addFriendByTg(tg); await refresh(); return f; },
     removeFriend: async (id) => { if (!api) return; await api.removeFriend(id); await refresh(); },
+    coach: async (req) => { if (!api || status !== 'online') throw new Error(status === 'off' ? 'Тренер работает через сервер игры, а он не подключён' : 'Нет связи с сервером'); return api.coach(req); },
   }), [mode, status, error, me, friends, refresh, api]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

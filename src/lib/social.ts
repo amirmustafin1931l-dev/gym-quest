@@ -1,6 +1,6 @@
 /* Мультиплеер: снимок героя, адаптеры Supabase и демо-режима */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import type { AppState, MuscleId } from '../types';
+import type { AppState, CoachId, CoachPlan, MuscleId } from '../types';
 import type { ExerciseMap } from './stats';
 import { exerciseBests, exerciseHistory, totals, weekStreak, workoutMuscles } from './stats';
 import { levelFromXp } from './xp';
@@ -47,7 +47,16 @@ export interface SocialApi {
   week(): Promise<RemoteProfile[]>;
   addFriendByTg(tg: number): Promise<RemoteProfile | null>;
   removeFriend(id: string): Promise<void>;
+  coach(req: CoachRequest): Promise<CoachReply>;
 }
+
+export interface CoachRequest {
+  mode: 'check' | 'chat' | 'plan'; persona?: CoachId; summary?: string;
+  messages?: { role: 'user' | 'assistant'; content: string }[];
+  catalog?: { id: string; name: string; kind: string }[];
+}
+export type PlanPayload = Omit<CoachPlan, 'date' | 'coach' | 'workoutId'>;
+export interface CoachReply { text?: string; plan?: PlanPayload; left?: number; ready?: boolean; chatLeft?: number; planLeft?: number; error?: string }
 
 const env = import.meta.env as Record<string, string | undefined>;
 export const SUPABASE_URL = env.VITE_SUPABASE_URL; export const SUPABASE_ANON = env.VITE_SUPABASE_ANON_KEY;
@@ -59,7 +68,7 @@ export const socialMode = (): 'supabase' | 'mock' | 'off' => (env.VITE_SOCIAL_MO
 const METRIC_COL: Record<Metric, string> = { xp: 'xp', tonnage: 'tonnage', streak: 'streak', bench: 'bests->bench', squat: 'bests->squat', deadlift: 'bests->deadlift' };
 
 class SupabaseSocial implements SocialApi {
-  private client: SupabaseClient | null = null; me: RemoteProfile | null = null;
+  private client: SupabaseClient | null = null; me: RemoteProfile | null = null; private token = '';
   async connect() {
     const dev = env.VITE_DEV_LOGIN_SECRET ? { secret: env.VITE_DEV_LOGIN_SECRET, id: Number(localStorage.getItem('gq_dev_tg') || (Math.floor(Math.random() * 1e6) + 1)), name: 'Dev' } : undefined;
     if (dev) localStorage.setItem('gq_dev_tg', String(dev.id));
@@ -67,7 +76,7 @@ class SupabaseSocial implements SocialApi {
     if (!r.ok) throw new Error(`Вход не удался (${r.status})`);
     const { token, profile } = await r.json();
     this.client = createClient(SUPABASE_URL!, SUPABASE_ANON!, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false } });
-    this.me = profile; return profile;
+    this.token = token; this.me = profile; return profile;
   }
   private c() { if (!this.client) throw new Error('Нет соединения'); return this.client; }
   async sync(s: Snapshot) { if (!this.me) return; const { error } = await this.c().from('profiles').update({ ...s, updated_at: new Date().toISOString() }).eq('id', this.me.id); if (error) throw error; this.me = { ...this.me, ...s }; }
@@ -76,6 +85,12 @@ class SupabaseSocial implements SocialApi {
   async week() { const { data, error } = await this.c().from('profiles').select('*').eq('week->>start', dayKey(startOfWeek(new Date()))).order('week->xp', { ascending: false }).limit(50); if (error) throw error; return (data ?? []) as RemoteProfile[]; }
   async addFriendByTg(tg: number) { const { data, error } = await this.c().rpc('add_friend_by_tg', { friend_tg: tg }); if (error) throw error; return (data as RemoteProfile) ?? null; }
   async removeFriend(id: string) { const { error } = await this.c().rpc('remove_friend', { friend: id }); if (error) throw error; }
+  async coach(req: CoachRequest): Promise<CoachReply> {
+    const r = await fetch(`${SUPABASE_URL}/functions/v1/coach`, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON!, Authorization: `Bearer ${this.token}` }, body: JSON.stringify(req) });
+    const d = await r.json().catch(() => ({ error: `Ошибка сервера (${r.status})` }));
+    if (!r.ok) throw new Error(d.error || `Ошибка сервера (${r.status})`);
+    return d as CoachReply;
+  }
 }
 
 /** Демо-режим: выдуманная банда, чтобы посмотреть экраны без сервера */
@@ -97,6 +112,20 @@ class MockSocial implements SocialApi {
   async week() { return [...this.all, ...(this.me ? [this.me] : [])]; }
   async addFriendByTg(tg: number) { const p = this.all.find((x) => x.tg_id === tg); if (!p) return null; localStorage.setItem('gq_mock_friends', JSON.stringify([...new Set([...this.friendIds(), p.id])])); return p; }
   async removeFriend(id: string) { localStorage.setItem('gq_mock_friends', JSON.stringify(this.friendIds().filter((x) => x !== id))); }
+  async coach(req: CoachRequest): Promise<CoachReply> {
+    await new Promise((r) => setTimeout(r, 700));
+    if (req.mode === 'check') return { ready: true, chatLeft: 30, planLeft: 2 };
+    if (req.mode === 'plan') {
+      const ids = new Set((req.catalog ?? []).map((c) => c.id));
+      const pick = (id: string, sets: number, reps: number | null, weight: number | null, rest: number, rir: number | null, note: string) => ids.has(id) ? [{ id, sets, reps, weight, seconds: null, rest, rir, note }] : [];
+      return { left: 1, plan: {
+        greeting: 'Йо, малой! Демо-режим: спину строим, она у тебя отстаёт. Вчера жал — грудь отдыхает.',
+        title: 'День спины', minutes: 55, warmup: '5 мин гребля, затем становая: гриф ×10, 60 ×5, 90 ×3, 110 ×1',
+        exercises: [...pick('deadlift', 3, 5, 122.5, 180, 2, 'Главное упражнение дня: +2,5 кг к прошлому разу'), ...pick('barbell_row', 3, 8, 60, 120, 2, 'Спина отстаёт — добираем объём'), ...pick('pullups', 3, null, null, 120, 1, 'До 1 повтора в запасе'), ...pick('calf_raise', 4, 15, 40, 60, 1, 'Икры — пауза внизу 1 с')],
+        progression: 'Если все подходы чистые — в следующий раз 125 кг в становой.', tip: 'Перед становой «натяни» гриф, чтобы спина встала. Не позорь район.' } };
+    }
+    return { text: 'Йо, это демо-режим. На сервере я отвечу по-настоящему: по твоим цифрам и с планом.', left: 29 };
+  }
 }
 
 export const createSocial = (): SocialApi | null => { const m = socialMode(); return m === 'mock' ? new MockSocial() : m === 'supabase' ? new SupabaseSocial() : null; };

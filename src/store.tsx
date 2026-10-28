@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
-import type { AppState, Exercise, SetEntry, Workout, WorkoutSummary, AiNote } from './types';
+import type { AppState, ChatMsg, CoachId, CoachPlan, Exercise, SetEntry, Workout, WorkoutSummary, AiNote } from './types';
 import { BASE_EXERCISES } from './data/exercises';
 import { uid } from './lib/dates';
 import { emptyState, loadLocal, saveLocal } from './lib/storage';
 import { computeWorkoutXp, levelFromXp } from './lib/xp';
 import { muscleStatuses, type ExerciseMap } from './lib/stats';
 import { ACHIEVEMENT_MAP, evaluateAchievements } from './lib/achievements';
+import type { DayTask } from './lib/programs';
 
 export type Action =
   | { type: 'hydrate'; state: AppState }
@@ -26,6 +27,10 @@ export type Action =
   | { type: 'setProfile'; patch: Partial<AppState['profile']> }
   | { type: 'addAiNote'; note: AiNote }
   | { type: 'unlockAchievements'; ids: string[]; xp: number }
+  | { type: 'coachMsg'; coach: CoachId; msg: ChatMsg; ifEmpty?: boolean }
+  | { type: 'coachPlan'; plan: CoachPlan }
+  | { type: 'startTask'; task: DayTask }
+  | { type: 'setProgram'; id: 'fullbody3' | 'upperlower4' | 'ppl' | null }
   | { type: 'reset' };
 
 const reducer = (s: AppState, a: Action): AppState => {
@@ -86,7 +91,31 @@ const reducer = (s: AppState, a: Action): AppState => {
       const now = new Date().toISOString();
       return { ...s, achievements: [...s.achievements, ...a.ids.map((id) => ({ id, date: now }))], profile: { ...s.profile, xp: s.profile.xp + a.xp } };
     }
-    case 'reset': return { ...emptyState(), profile: { ...emptyState().profile, apiKey: s.profile.apiKey } };
+    case 'coachMsg': {
+      if (a.ifEmpty && (s.coachChats[a.coach]?.length ?? 0) > 0) return s;
+      const list = [...(s.coachChats[a.coach] ?? []), a.msg].slice(-200);
+      return { ...s, coachChats: { ...s.coachChats, [a.coach]: list } };
+    }
+    case 'coachPlan': {
+      const rest = s.coachPlans.filter((p) => p.date !== a.plan.date);
+      return { ...s, coachPlans: [...rest, a.plan].slice(-30) };
+    }
+    case 'startTask': {
+      if (s.draft) return s;
+      const t = a.task;
+      const id = uid();
+      const entries = t.exercises.map((e) => ({
+        id: uid(), exerciseId: e.id,
+        sets: Array.from({ length: Math.max(1, e.sets) }, () => ({ id: uid(), weight: e.weight ?? undefined, reps: e.reps ?? undefined, seconds: e.seconds ?? undefined })),
+      }));
+      const task = { source: t.source, title: t.title, programId: t.programId, day: t.day, coachDate: t.coachDate };
+      return { ...s,
+        draft: { id, date: new Date().toISOString(), entries, xp: 0, xpBreakdown: [], prs: [], task },
+        coachPlans: t.coachDate ? s.coachPlans.map((p) => (p.date === t.coachDate ? { ...p, workoutId: id } : p)) : s.coachPlans };
+    }
+    case 'setProgram':
+      return { ...s, program: a.id ? { id: a.id, start: s.program?.id === a.id ? s.program.start : new Date().toISOString() } : undefined };
+    case 'reset': return { ...emptyState(), profile: { ...emptyState().profile, created: s.profile.created, name: s.profile.name, look: s.profile.look, gear: s.profile.gear } };
     default: return s;
   }
 };

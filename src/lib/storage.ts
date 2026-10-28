@@ -12,6 +12,8 @@ export const emptyState = (): AppState => ({
   achievements: [],
   draft: null,
   aiNotes: [],
+  coachChats: {},
+  coachPlans: [],
 });
 
 export const isAppState = (x: unknown): x is AppState =>

@@ -46,8 +46,11 @@ export interface PRRecord {
 
 export interface XPLine { label: string; xp: number }
 
+export interface WorkoutTask { source: 'program' | 'coach'; title: string; programId?: string; day?: number; coachDate?: string }
+
 export interface Workout {
   id: string;
+  task?: WorkoutTask;
   date: string;       // ISO начала
   endedAt?: string;
   entries: WorkoutEntry[];
@@ -76,9 +79,25 @@ export interface Profile {
   wastedAt?: string;
   /** первый запуск: герой создан */
   created?: boolean;
+  /** выбранный ИИ-тренер */
+  coach?: CoachId;
+  /** анкета для тренера */
+  goal?: CoachGoal;
 }
 
 export interface AiNote { date: string; question?: string; text: string }
+
+export type CoachId = 'bigt' | 'sarge' | 'ricky';
+export interface CoachGoal {
+  goal: 'strength' | 'mass' | 'cut' | 'general';
+  days: number;            // тренировок в неделю
+  place: 'gym' | 'home';
+  sex: 'm' | 'f';
+  limits?: string;         // травмы, ограничения
+}
+export interface PlanExercise { id: string; sets: number; reps: number | null; weight: number | null; seconds: number | null; rest: number; rir: number | null; note: string | null }
+export interface CoachPlan { date: string; coach: CoachId; greeting: string; title: string; minutes: number; warmup: string; exercises: PlanExercise[]; progression: string; tip: string; workoutId?: string }
+export interface ChatMsg { id: string; role: 'user' | 'assistant'; text: string; date: string; planDate?: string }
 
 export interface AppState {
   version: 1;
@@ -89,6 +108,9 @@ export interface AppState {
   achievements: UnlockedAchievement[];
   draft: Workout | null;
   aiNotes: AiNote[];
+  coachChats: Partial<Record<CoachId, ChatMsg[]>>;
+  coachPlans: CoachPlan[];   // последние задания, новые в конце
+  program?: { id: 'fullbody3' | 'upperlower4' | 'ppl'; start: string };
 }
 
 export interface WorkoutSummary {

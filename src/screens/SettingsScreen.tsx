@@ -11,13 +11,11 @@ import { toast } from '../lib/toast';
 export const SettingsScreen = ({ onBack }: { onBack: () => void }) => {
   const { state, dispatch } = useStore();
   const [name, setName] = useState(state.profile.name);
-  const [key, setKey] = useState(state.profile.apiKey ?? '');
-  const [showKey, setShowKey] = useState(false);
   const [meta, setMeta] = useState<CloudMeta | null>(null);
   const [busy, setBusy] = useState(false);
   const [importText, setImportText] = useState(''); const [importOpen, setImportOpen] = useState(false); const [resetOpen, setResetOpen] = useState(false);
   useEffect(() => { if (cloudAvailable()) cloudMeta().then(setMeta).catch(() => null); }, []);
-  const saveProfile = () => { dispatch({ type: 'setProfile', patch: { name: name.trim(), apiKey: key.trim() || undefined } }); toast('Сохранено'); };
+  const saveProfile = () => { dispatch({ type: 'setProfile', patch: { name: name.trim() } }); toast('Сохранено'); };
   const backup = async () => { setBusy(true); try { const m = await cloudSave(serialize(state)); setMeta(m); toast('Бэкап сохранён в Telegram'); } catch (e) { toast(`Ошибка: ${(e as Error).message}`); } finally { setBusy(false); } };
   const restore = async () => { if (!confirm('Заменить текущие данные бэкапом из облака Telegram?')) return; setBusy(true); try { const raw = await cloudLoad(); if (!raw) { toast('В облаке нет бэкапа'); return; } dispatch({ type: 'hydrate', state: parseImport(raw) }); toast('Данные восстановлены'); } catch (e) { toast(`Ошибка: ${(e as Error).message}`); } finally { setBusy(false); } };
   const exportJson = async () => {
@@ -41,10 +39,6 @@ export const SettingsScreen = ({ onBack }: { onBack: () => void }) => {
         <Panel><div className="pm-title"><span>Профиль</span></div>
           <div className="stack">
             <label className="small mut">Имя героя<input value={name} onChange={(e) => setName(e.target.value)} placeholder="Атлет" /></label>
-            <label className="small mut">API-ключ Anthropic (ИИ-тренер)
-              <div className="row"><input type={showKey ? 'text' : 'password'} value={key} onChange={(e) => setKey(e.target.value)} placeholder="sk-ant-…" autoComplete="off" /><button className="icon-btn" onClick={() => setShowKey((v) => !v)} aria-label="Показать ключ">{showKey ? '🙈' : '👁️'}</button></div>
-            </label>
-            <p className="tiny mut">Ключ хранится только в этом приложении и отправляется напрямую в API Anthropic. Получить: console.anthropic.com → API Keys.</p>
             <Cta onClick={saveProfile}>Сохранить</Cta>
           </div></Panel>
         <Panel><div className="pm-title"><span>Бэкап в Telegram</span><span className={cloudAvailable() ? 'green' : 'mut'}>{cloudAvailable() ? 'доступно' : 'только в Telegram'}</span></div>

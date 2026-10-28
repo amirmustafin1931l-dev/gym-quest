@@ -14,6 +14,9 @@ import { bulkFromLevel, stageOf, DEFAULT_LOOK } from '../lib/figure';
 import { haptic } from '../lib/telegram';
 import { toast } from '../lib/toast';
 import { useClock } from './HeroScreen';
+import { TaskCard } from '../components/TaskCard';
+import { restSuggested, todayTask, trainedToday } from '../lib/programs';
+import { programById } from '../data/programs';
 
 const levelTitle = (level: number) => [...LEVEL_TITLES].reverse().find(([l]) => level >= l)?.[1] ?? 'Новичок';
 const useElapsed = (startIso?: string) => {
@@ -35,7 +38,7 @@ export const missionName = (w: Workout, exMap: Map<string, Exercise>) => {
   return cats.map((c) => DAY_NAMES[c]).join(' + ').replace(' + ДЕНЬ', ' + ');
 };
 
-export const WorkoutScreen = ({ onExercise }: { onExercise: (id: string) => void }) => {
+export const WorkoutScreen = ({ onExercise, onPrograms, onCoach }: { onExercise: (id: string) => void; onPrograms: () => void; onCoach: () => void }) => {
   const { state, dispatch, exMap, finishWorkout } = useStore();
   const clock = useClock();
   const [picker, setPicker] = useState(false);
@@ -58,7 +61,8 @@ export const WorkoutScreen = ({ onExercise }: { onExercise: (id: string) => void
           <Hud clock={clock} money={t.tonnage} bars={[]} stars={weekStreak(state.workouts)} compact />
         </div>
         <div className="z stack">
-          <Cta onClick={() => { haptic('medium'); dispatch({ type: 'startWorkout' }); }} style={{ height: 56 }}>⚔️ Начать миссию</Cta>
+          <TodayBlock onPrograms={onPrograms} onCoach={onCoach} />
+          <Cta dark onClick={() => { haptic('medium'); dispatch({ type: 'startWorkout' }); }}>＋ Свободная миссия без задания</Cta>
           <Panel>
             <div className="pm-title"><span>Журнал миссий</span></div>
             {history.length ? <div className="list">{history.map((w) => <HistoryItem key={w.id} w={w} onExercise={onExercise} onDelete={() => { if (confirm('Удалить миссию? Respect за неё будет снят.')) dispatch({ type: 'deleteWorkout', id: w.id }); }} />)}</div>
@@ -74,7 +78,7 @@ export const WorkoutScreen = ({ onExercise }: { onExercise: (id: string) => void
     <div className="screen">
       <Sunset /><div className="halftone" />
       <div className="head">
-        <div><div className="tag sm">{missionName(draft, exMap)}</div><div style={{ marginTop: 6 }}><Stencil kind="y">Миссия идёт · {filledSets} подх.</Stencil></div></div>
+        <div><div className="tag sm">{draft.task?.title.toUpperCase() ?? missionName(draft, exMap)}</div><div style={{ marginTop: 6 }}><Stencil kind="y">Миссия идёт · {filledSets} подх.</Stencil></div></div>
         <Hud clock={fmtClock(elapsed)} money={workoutTonnage(draft, exMap)} moneyLabel="тоннаж миссии, кг" bars={[]} stars={weekStreak(state.workouts)} compact />
       </div>
       <div className="z stack">
@@ -146,7 +150,7 @@ const HistoryItem = ({ w, onExercise, onDelete }: { w: Workout; onExercise: (id:
     <details>
       <summary className="list-item">
         <span className="ic">🏋️</span>
-        <span className="grow"><div className="t">{missionName(w, exMap)} · {fmtDateTime(w.date)}</div><div className="s">{w.entries.length} упр. · {workoutSets(w, exMap)} подх. · {fmtNum(workoutTonnage(w, exMap))} кг{dur ? ` · ${dur} мин` : ''}</div></span>
+        <span className="grow"><div className="t">{w.task ? `📋 ${w.task.title}` : missionName(w, exMap)} · {fmtDateTime(w.date)}</div><div className="s">{w.entries.length} упр. · {workoutSets(w, exMap)} подх. · {fmtNum(workoutTonnage(w, exMap))} кг{dur ? ` · ${dur} мин` : ''}</div></span>
         <span className="chip active">+{w.xp}</span>
       </summary>
       <div className="stack" style={{ padding: '4px 0 12px 50px' }}>
@@ -190,5 +194,40 @@ export const MissionPassed = ({ summary, onClose }: { summary: WorkoutSummary | 
         <Cta onClick={onClose} style={{ marginTop: 14 }}>Отлично</Cta>
       </div>
     </div>
+  );
+};
+
+/** Блок «задание на сегодня» над журналом миссий */
+const TodayBlock = ({ onPrograms, onCoach }: { onPrograms: () => void; onCoach: () => void }) => {
+  const { state, exMap, dispatch } = useStore();
+  const task = useMemo(() => todayTask(state, exMap), [state, exMap]);
+  const done = trainedToday(state);
+  if (!state.program && !task) {
+    return (
+      <Panel>
+        <div className="pm-title"><span>Задание на сегодня</span></div>
+        <p className="small t2">Выбери программу — Full Body или сплит — и игра каждый день будет выдавать тренировку с весами, рассчитанными по твоему прогрессу. Или попроси задание у тренера.</p>
+        <div className="row" style={{ marginTop: 10 }}>
+          <Cta onClick={onPrograms} style={{ flex: 1 }}>📋 Выбрать программу</Cta>
+          <Cta dark onClick={onCoach} style={{ flex: 1 }}>📱 Тренер</Cta>
+        </div>
+      </Panel>
+    );
+  }
+  if (done) {
+    return (
+      <Panel>
+        <div className="pm-title"><span>✓ Сегодня миссия выполнена</span></div>
+        <p className="small t2">Мышцы растут на отдыхе. {task ? `Следующее задание: «${task.title}».` : ''}</p>
+        {state.program && <Cta dark className="sm" onClick={onPrograms} style={{ marginTop: 8 }}>{programById(state.program.id)?.name} · сменить</Cta>}
+      </Panel>
+    );
+  }
+  if (!task) return null;
+  return (
+    <>
+      {restSuggested(state) && task.source === 'program' && <div className="pager w"><div className="hd"><span>Тренер · пейджер</span><span>отдых</span></div><div className="msg">Вчера была миссия. В схеме на 3 дня лучше отдохнуть сегодня — но если чувствуешь силы, задание ниже.</div></div>}
+      <TaskCard task={task} onStart={() => dispatch({ type: 'startTask', task })} onChange={onPrograms} />
+    </>
   );
 };

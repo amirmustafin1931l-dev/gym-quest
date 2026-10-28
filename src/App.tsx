@@ -13,6 +13,7 @@ import { CoachScreen } from './screens/CoachScreen';
 import { GangScreen } from './screens/GangScreen';
 import { AchievementsScreen } from './screens/AchievementsScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
+import { ProgramsScreen } from './screens/ProgramsScreen';
 import { cloudAvailable, cloudLoad, cloudSave, haptic } from './lib/telegram';
 import { parseImport, serialize } from './lib/storage';
 import { toast } from './lib/toast';
@@ -22,7 +23,7 @@ import { bulkFromLevel, stageOf, DEFAULT_LOOK } from './lib/figure';
 import { plural } from './lib/dates';
 
 type Tab = 'hero' | 'workout' | 'gang' | 'progress' | 'coach';
-type Sub = { kind: 'none' } | { kind: 'settings' } | { kind: 'achievements' } | { kind: 'exercises' } | { kind: 'exercise'; id: string; back?: Sub } | { kind: 'muscle'; id: MuscleId };
+type Sub = { kind: 'none' } | { kind: 'settings' } | { kind: 'programs' } | { kind: 'achievements' } | { kind: 'exercises' } | { kind: 'exercise'; id: string; back?: Sub } | { kind: 'muscle'; id: MuscleId };
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'hero', label: 'Герой', icon: '👤' }, { id: 'workout', label: 'Миссия', icon: '🏋️' }, { id: 'gang', label: 'Банда', icon: '👥' }, { id: 'progress', label: 'Статы', icon: '📈' }, { id: 'coach', label: 'Тренер', icon: '📟' },
 ];
@@ -66,17 +67,18 @@ export default function App() {
 
   let content;
   if (sub.kind === 'settings') content = <SettingsScreen onBack={() => setSub({ kind: 'none' })} />;
+  else if (sub.kind === 'programs') content = <ProgramsScreen onBack={() => setSub({ kind: 'none' })} />;
   else if (sub.kind === 'achievements') content = <AchievementsScreen onBack={() => setSub({ kind: 'none' })} />;
   else if (sub.kind === 'exercise' || sub.kind === 'muscle' || sub.kind === 'exercises') content = (
     <ExercisesScreen selectedId={sub.kind === 'exercise' ? sub.id : null} muscle={sub.kind === 'muscle' ? sub.id : null}
       onSelect={(id) => setSub(id ? { kind: 'exercise', id, back: sub.kind === 'muscle' || sub.kind === 'exercises' ? sub : undefined } : sub.kind === 'exercise' ? (sub.back ?? { kind: 'none' }) : sub)}
       onBack={() => setSub({ kind: 'none' })} />
   );
-  else if (tab === 'hero') content = <HeroScreen onStartMission={() => { setTab('workout'); if (!state.draft) dispatch({ type: 'startWorkout' }); }} onOpen={(s, id) => { if (s === 'muscle' && id) setSub({ kind: 'muscle', id: id as MuscleId }); else setSub({ kind: s } as Sub); }} />;
-  else if (tab === 'workout') content = <WorkoutScreen onExercise={openExercise} />;
+  else if (tab === 'hero') content = <HeroScreen onStartMission={() => setTab('workout')} onOpen={(s, id) => { if (s === 'muscle' && id) setSub({ kind: 'muscle', id: id as MuscleId }); else setSub({ kind: s } as Sub); }} />;
+  else if (tab === 'workout') content = <WorkoutScreen onExercise={openExercise} onPrograms={() => setSub({ kind: 'programs' })} onCoach={() => go('coach')} />;
   else if (tab === 'gang') content = <GangScreen />;
   else if (tab === 'progress') content = <ProgressScreen onExercise={openExercise} />;
-  else content = <CoachScreen onSettings={() => setSub({ kind: 'settings' })} />;
+  else content = <CoachScreen onStarted={() => go('workout')} />;
 
   const t = totals(state.workouts, exMap);
   return (

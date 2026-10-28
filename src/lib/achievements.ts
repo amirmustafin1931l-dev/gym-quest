@@ -109,7 +109,8 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'explorer', title: 'Исследователь', desc: 'Попробуй 20 разных упражнений', icon: '🧭', xp: 120, group: 'Особые', check: (c) => new Set(c.workouts.flatMap((w) => w.entries.map((e) => e.exerciseId))).size >= 20, progress: (c) => Math.min(1, new Set(c.workouts.flatMap((w) => w.entries.map((e) => e.exerciseId))).size / 20) },
   { id: 'lvl_10', title: 'Десятый уровень', desc: 'Достигни 10 уровня', icon: '🔟', xp: 200, group: 'Особые', check: (c) => levelFromXp(c.state.profile.xp).level >= 10 },
   { id: 'lvl_25', title: 'Герой гильдии', desc: 'Достигни 25 уровня', icon: '🛡️', xp: 500, group: 'Особые', check: (c) => levelFromXp(c.state.profile.xp).level >= 25 },
-  { id: 'ai_coach', title: 'Совет мудреца', desc: 'Получи анализ от ИИ-тренера', icon: '🧙', xp: 30, group: 'Особые', check: (c) => c.state.aiNotes.length > 0 },
+  { id: 'ai_coach', title: 'Позвонил старшим', desc: 'Получи задание от тренера', icon: '📱', xp: 30, group: 'Особые', check: (c) => (c.state.coachPlans?.length ?? 0) > 0 || c.state.aiNotes.length > 0 },
+  { id: 'coach_plan_5', title: 'По заданию', desc: 'Выполни 5 заданий тренера', icon: '📋', xp: 200, group: 'Дисциплина', check: (c) => (c.state.coachPlans ?? []).filter((p) => p.workoutId && c.workouts.some((w) => w.id === p.workoutId)).length >= 5, progress: (c) => Math.min(1, (c.state.coachPlans ?? []).filter((p) => p.workoutId && c.workouts.some((w) => w.id === p.workoutId)).length / 5) },
 ];
 
 export const ACHIEVEMENT_MAP = new Map(ACHIEVEMENTS.map((a) => [a.id, a]));
