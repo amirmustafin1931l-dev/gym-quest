@@ -31,7 +31,7 @@ fi
 # 4. Переменные для сборки на GitHub
 say "Прописываю переменные сборки"
 for v in VITE_SUPABASE_URL VITE_SUPABASE_ANON_KEY VITE_BOT_NAME; do gh variable set "$v" --repo "$OWNER/$REPO" --body "${!v}"; done
-gh variable set VITE_APP_NAME --repo "$OWNER/$REPO" --body "${VITE_APP_NAME:- }"
+if [[ -n "${VITE_APP_NAME:-}" ]]; then gh variable set VITE_APP_NAME --repo "$OWNER/$REPO" --body "$VITE_APP_NAME"; fi
 
 # 5. GitHub Pages через Actions
 say "Включаю GitHub Pages"
