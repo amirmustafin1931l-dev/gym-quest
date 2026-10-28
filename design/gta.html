@@ -1,0 +1,129 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>GymQuest — больше GTA</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rubik+Spray+Paint&family=Bowlby+One+SC&family=Oswald:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#161616;color:#eee;font-family:Inter,system-ui;padding:20px}
+h1{font:800 20px Inter;margin:0 0 4px}.sub{color:#999;margin-bottom:14px;font-size:13px}
+.row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.label{font:700 13px Inter;margin:0 0 8px;color:#fff}.label span{color:#999;font-weight:400}
+.phone{width:375px;height:812px;overflow:hidden;position:relative;border-radius:36px;border:6px solid #222;box-shadow:0 20px 60px rgba(0,0,0,.6);flex-shrink:0;background:#000}
+.scr{position:absolute;inset:0;overflow:hidden}
+.mono{font-family:'Rubik Mono One'}.bowl{font-family:'Bowlby One SC'}.spray{font-family:'Rubik Spray Paint'}.osw{font-family:Oswald;letter-spacing:.1em;text-transform:uppercase}
+.outl{-webkit-text-stroke:1.5px #000;text-shadow:3px 3px 0 #000}
+.gold{background:linear-gradient(#fff2b0,#f7b733 55%,#c8690a);-webkit-background-clip:text;color:transparent;filter:drop-shadow(3px 3px 0 #000)}
+.yellow{color:#f5c542;-webkit-text-stroke:1.2px #2a1a00;text-shadow:0 0 6px rgba(0,0,0,.8),3px 3px 0 #000}
+/* HUD San Andreas */
+.hud{position:absolute;right:14px;top:14px;text-align:right;line-height:1}
+.hud .clock{font:18px 'Rubik Mono One';color:#fff;-webkit-text-stroke:1px #000;text-shadow:2px 2px 0 #000}
+.hud .money{font:18px 'Rubik Mono One';color:#49b84a;-webkit-text-stroke:1px #000;text-shadow:2px 2px 0 #000;margin-top:4px}
+.hud .bars{margin-top:6px;display:grid;gap:3px;justify-items:end}
+.hud .b{width:120px;height:9px;background:rgba(0,0,0,.65);border:2px solid #000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.hud .b i{display:block;height:100%}
+.hud .stars{font-size:15px;letter-spacing:2px;color:#f5c542;-webkit-text-stroke:.8px #000;margin-top:4px}.hud .stars b{color:rgba(0,0,0,.55);-webkit-text-stroke:.8px #000}
+.hud .lbl{font:9px Oswald;letter-spacing:.14em;text-transform:uppercase;color:#ddd;text-shadow:1px 1px 0 #000;margin-top:2px}
+.radar{position:absolute;left:14px;bottom:92px;width:112px;height:112px;border-radius:50%;background:#0d1f0d;border:3px solid #111;box-shadow:0 0 0 2px #d9d9d9,0 6px 16px rgba(0,0,0,.6);overflow:hidden}
+.marker{position:absolute;left:0;right:0;bottom:92px;text-align:center}
+.cta{height:52px;background:linear-gradient(#f7c843,#d9930f);color:#1a1200;font:16px 'Rubik Mono One';display:flex;align-items:center;justify-content:center;border:3px solid #000;box-shadow:0 4px 0 #000}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:72px;display:flex;justify-content:space-around;align-items:center;padding-bottom:12px;background:rgba(0,0,0,.92);border-top:3px solid #000;color:#bbb}
+.tabs div{font:9px 'Rubik Mono One';text-align:center;text-transform:uppercase}.tabs i{display:block;font-size:20px;font-style:normal;margin-bottom:4px}.tabs .on{color:#f5c542;-webkit-text-stroke:.3px #000}
+/* pause menu */
+.pm-tabs{display:flex;gap:14px;font:12px 'Rubik Mono One';color:#bbb;padding:0 16px}.pm-tabs .on{color:#fff;border-bottom:3px solid #f5c542;padding-bottom:3px}
+.pm-row{display:grid;grid-template-columns:110px 1fr 36px;gap:10px;align-items:center;font:11px 'Rubik Mono One';color:#fff;margin:7px 0}
+.pm-row .bar{height:10px;background:#1a1a1a;border:2px solid #000;box-shadow:inset 0 0 0 1px #333}.pm-row .bar i{display:block;height:100%}
+.pm-row .v{text-align:right;color:#f5c542}
+.menu{position:absolute;left:0;right:0;bottom:0;background:#000;padding:10px 0 14px;border-top:3px solid #222}
+.menu div{font:13px 'Rubik Mono One';color:#aaa;padding:8px 20px;text-transform:uppercase}.menu .on{color:#000;background:#f5c542}
+/* art */
+.halftone{position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.35) 1.2px,transparent 1.4px);background-size:7px 7px;mix-blend-mode:multiply;pointer-events:none}
+.grunge{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,transparent 45%,rgba(0,0,0,.55) 100%)}
+.tag{font:30px 'Rubik Spray Paint';color:#f5c542;text-shadow:3px 3px 0 #000,0 0 14px rgba(245,197,66,.5)}
+.stencil{font:13px 'Rubik Mono One';color:#fff;background:#111;display:inline-block;padding:4px 8px;transform:rotate(-3deg);border:2px solid #fff}
+/* wasted */
+.wasted{position:absolute;inset:0;background:rgba(40,40,40,.55);backdrop-filter:grayscale(1) contrast(1.1)}
+.wasted .band{position:absolute;left:0;right:0;top:46%;transform:translateY(-50%);background:linear-gradient(transparent,rgba(0,0,0,.85) 25%,rgba(0,0,0,.85) 75%,transparent);padding:34px 0;text-align:center}
+.wasted .t{font:54px 'Bowlby One SC';color:#c8322a;-webkit-text-stroke:2px #000;text-shadow:4px 4px 0 #000;letter-spacing:.02em}
+.wasted .s{font:13px 'Rubik Mono One';color:#fff;margin-top:6px}
+</style></head><body>
+<h1>GymQuest — «больше GTA»</h1><div class="sub">Три направления главного экрана с узнаваемыми элементами San Andreas, плюс экраны WASTED и MISSION PASSED в новом стиле.</div>
+<div class="row" id="phones"></div>
+<script src="figure.js?v=4"></script><script>
+const M = { today:['chest','triceps','front_delts','quads','glutes'], lagging:['lats','upper_back','calves'], load:{biceps:.6,forearms:.3,abs:.5,side_delts:.4,hamstrings:.5} };
+const fig = (b, o) => drawFigure(b, { gear:'street', ...o });
+// Закат Лос-Сантоса: небо, солнце, пальмы, силуэт города
+const sunset = (h=812) => `<svg viewBox="0 0 375 ${h}" width="375" height="${h}" style="position:absolute;inset:0" xmlns="http://www.w3.org/2000/svg"><defs>
+<linearGradient id="sky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2b1b4d"/><stop offset=".35" stop-color="#8a2d5e"/><stop offset=".6" stop-color="#e8692a"/><stop offset=".78" stop-color="#f7b733"/><stop offset=".8" stop-color="#1a1410"/><stop offset="1" stop-color="#0d0c0b"/></linearGradient>
+<radialGradient id="sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff0b0"/><stop offset=".6" stop-color="#f7b733"/><stop offset="1" stop-color="#f7b733" stop-opacity="0"/></radialGradient></defs>
+<rect width="375" height="${h}" fill="url(#sky)"/><circle cx="270" cy="${h*0.62}" r="80" fill="url(#sun)"/><circle cx="270" cy="${h*0.62}" r="46" fill="#ffd877"/>
+<g fill="#120d16">${[0,40,70,110,150,200,250,300,340].map((x,i)=>`<rect x="${x}" y="${h*0.78-20-(i%3)*18-(i%2)*10}" width="${30+(i%2)*18}" height="120"/>`).join('')}</g>
+<g fill="#0a0708"><path d="M40 ${h*0.8} q6 -90 -10 -150 l14 0 q10 60 8 150z"/><g transform="translate(36 ${h*0.8-150})">${[0,45,90,135,180,225,270,315].map(a=>`<ellipse rx="34" ry="8" transform="rotate(${a}) translate(26 0)"/>`).join('')}</g>
+<path d="M330 ${h*0.8} q-4 -110 14 -170 l12 0 q-12 60 -12 170z"/><g transform="translate(343 ${h*0.8-170})">${[0,45,90,135,180,225,270,315].map(a=>`<ellipse rx="38" ry="9" transform="rotate(${a}) translate(30 0)"/>`).join('')}</g></g>
+<rect y="${h*0.8}" width="375" height="${h*0.2}" fill="#0d0c0b"/><path d="M0 ${h*0.8} h375" stroke="#f7b733" stroke-width="2" opacity=".5"/></svg>`;
+const radarSvg = () => `<svg viewBox="0 0 112 112" width="112" height="112"><circle cx="56" cy="56" r="56" fill="#13331a"/>${[0,1,2,3].map(i=>`<circle cx="56" cy="56" r="${14+i*13}" fill="none" stroke="rgba(255,255,255,.12)"/>`).join('')}<path d="M56 4 V108 M4 56 H108" stroke="rgba(255,255,255,.12)"/>
+<polygon points="${[[56,14],[88,40],[92,70],[56,96],[20,80],[24,34]].map(p=>p.join(',')).join(' ')}" fill="rgba(245,197,66,.35)" stroke="#f5c542" stroke-width="2"/><circle cx="56" cy="56" r="4" fill="#fff"/>
+<text x="56" y="10" font-size="7" fill="#9be38a" text-anchor="middle" font-family="Oswald">ГРУДЬ</text><text x="100" y="44" font-size="7" fill="#9be38a" text-anchor="middle" font-family="Oswald">РУКИ</text><text x="100" y="78" font-size="7" fill="#9be38a" text-anchor="middle" font-family="Oswald">НОГИ</text><text x="56" y="108" font-size="7" fill="#ff9f1c" text-anchor="middle" font-family="Oswald">СПИНА</text><text x="12" y="88" font-size="7" fill="#9be38a" text-anchor="middle" font-family="Oswald">КОР</text><text x="12" y="36" font-size="7" fill="#9be38a" text-anchor="middle" font-family="Oswald">ПЛЕЧИ</text></svg>`;
+const hud = () => `<div class="hud"><div class="clock">17:49</div><div class="money">$00003418</div><div class="lbl">тоннаж, кг</div>
+ <div class="bars"><div class="b"><i style="width:62%;background:#b4342c"></i></div><div class="b"><i style="width:74%;background:#e8e8e8"></i></div><div class="b"><i style="width:31%;background:#3a8fd6"></i></div></div><div class="lbl">respect · дисциплина · выносливость</div>
+ <div class="stars">★★★<b>★★</b></div></div>`;
+const tabs = (on) => `<div class="tabs">${[['👤','Герой'],['🏋️','Миссия'],['📋','Упражн'],['📈','Статы'],['📟','Тренер']].map(([i,n],k)=>`<div class="${k===on?'on':''}"><i>${i}</i>${n}</div>`).join('')}</div>`;
+const P = [];
+
+// V1 — HUD Лос-Сантос
+P.push(['V1 · HUD Лос-Сантос', `<div class="scr">${sunset()}
+ <div style="position:absolute;left:14px;top:14px"><div class="mono gold" style="font-size:22px">АМИР</div><div class="osw" style="font:12px Oswald;color:#fff;text-shadow:1px 1px 0 #000;letter-spacing:.1em;margin-top:4px">КАЧОК · 12 УР · СТАДИЯ 3/5</div></div>
+ ${hud()}
+ <div style="position:absolute;left:50%;top:150px;transform:translateX(-50%)">${fig(.55,{stage:3,w:270,h:468,muscles:M})}</div>
+ <div class="radar">${radarSvg()}</div>
+ <div style="position:absolute;right:14px;bottom:170px;text-align:right"><div class="yellow mono" style="font-size:13px">СЕГОДНЯ: ГРУДЬ</div><div class="yellow mono" style="font-size:13px;margin-top:4px">ОТСТАЮТ: СПИНА, ИКРЫ</div><div class="mono" style="font-size:9px;color:#fff;text-shadow:1px 1px 0 #000;margin-top:6px">↻ ПОКАЗАТЬ СПИНУ</div></div>
+ <div style="position:absolute;left:14px;right:14px;bottom:92px;padding-left:124px"><div class="cta" style="height:46px;font-size:13px">НАЧАТЬ МИССИЮ</div></div>
+ ${tabs(0)}</div>`]);
+
+// V2 — меню паузы
+P.push(['V2 · Меню паузы San Andreas', `<div class="scr" style="background:#000">
+ <div style="padding:16px 16px 6px"><div class="mono gold" style="font-size:26px;line-height:1">GYMQUEST</div><div class="spray" style="font-size:16px;color:#49b84a;margin-top:-2px;text-shadow:2px 2px 0 #000">грув стрит джим</div></div>
+ <div class="pm-tabs"><span class="on">ГЕРОЙ</span><span>СТАТЫ</span><span>БРИФ</span><span>ТРОФЕИ</span></div>
+ <div style="position:absolute;right:-20px;top:92px">${fig(.55,{stage:3,w:230,h:398,muscles:M})}</div>
+ <div style="position:absolute;left:16px;top:112px;width:170px">
+  <div class="mono" style="font-size:11px;color:#f5c542">АМИР</div><div style="font:11px Oswald;color:#bbb;letter-spacing:.1em;margin:2px 0 10px">КАЧОК · УР. 12 · 3/5</div>
+  <div class="pm-row" style="grid-template-columns:70px 1fr 30px"><span>RESPECT</span><div class="bar"><i style="width:62%;background:#b4342c"></i></div><span class="v">62</span></div>
+  <div class="pm-row" style="grid-template-columns:70px 1fr 30px"><span>MUSCLE</span><div class="bar"><i style="width:58%;background:#f5c542"></i></div><span class="v">58</span></div>
+  <div class="pm-row" style="grid-template-columns:70px 1fr 30px"><span>STAMINA</span><div class="bar"><i style="width:31%;background:#3a8fd6"></i></div><span class="v">31</span></div>
+  <div class="pm-row" style="grid-template-columns:70px 1fr 30px"><span>DISCIPL</span><div class="bar"><i style="width:74%;background:#e8e8e8"></i></div><span class="v">74</span></div>
+  <div class="pm-row" style="grid-template-columns:70px 1fr 30px"><span>BALANCE</span><div class="bar"><i style="width:40%;background:#49b84a"></i></div><span class="v">40</span></div>
+  <div style="margin-top:10px;font:10px Oswald;color:#9be38a;letter-spacing:.08em">★★★☆☆ 3 НЕДЕЛИ ПОДРЯД</div>
+  <div style="margin-top:6px;font:10px Oswald;color:#ff9f1c;letter-spacing:.08em">ОТСТАЮТ: СПИНА, ИКРЫ</div>
+  <div style="margin-top:14px;font:20px 'Rubik Mono One';color:#49b84a;-webkit-text-stroke:1px #000">$3418</div><div style="font:9px Oswald;color:#999;letter-spacing:.12em">ТОННАЖ ВСЕГО, КГ</div>
+ </div>
+ <div style="position:absolute;left:16px;right:16px;bottom:230px"><div class="cta">НАЧАТЬ МИССИЮ</div></div>
+ <div class="menu"><div class="on">▶ Герой</div><div>Миссия</div><div>Упражнения</div><div>Статы</div><div>Тренер</div></div></div>`]);
+
+// V3 — арт загрузочного экрана
+P.push(['V3 · Арт загрузочного экрана', `<div class="scr" style="background:linear-gradient(160deg,#f2a341 0 48%,#1b6f8a 48% 100%)">
+ <div class="halftone"></div><div class="grunge"></div>
+ <div style="position:absolute;left:50%;top:150px;transform:translateX(-50%) rotate(-3deg);filter:drop-shadow(10px 10px 0 rgba(0,0,0,.45))">${fig(.55,{stage:3,w:290,h:503,muscles:M,shadow:false})}</div>
+ <div style="position:absolute;left:16px;top:18px"><div class="tag" style="font-size:40px;line-height:.95">АМИР</div><div class="stencil" style="margin-top:6px">КАЧОК · УР.12</div></div>
+ <div style="position:absolute;right:16px;top:20px;text-align:right"><div class="mono outl" style="font-size:18px;color:#49b84a">$3418</div><div class="stencil" style="font-size:9px;margin-top:6px;transform:rotate(2deg)">★★★☆☆ 3 НЕД.</div></div>
+ <div style="position:absolute;left:16px;right:16px;bottom:168px;background:#111;border:3px solid #fff;padding:10px 12px;transform:rotate(-1deg);box-shadow:6px 6px 0 #000">
+  <div class="mono" style="font-size:10px;color:#f5c542;margin-bottom:6px">RESPECT 620/1000</div><div style="height:10px;background:#333;border:2px solid #fff"><i style="display:block;height:100%;width:62%;background:#f5c542"></i></div>
+  <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="stencil" style="font-size:9px;transform:none;border-color:#49b84a;color:#49b84a">грудь ✓</span><span class="stencil" style="font-size:9px;transform:none;border-color:#49b84a;color:#49b84a">квадры ✓</span><span class="stencil" style="font-size:9px;transform:none;border-color:#ff9f1c;color:#ff9f1c">спина ↓</span><span class="stencil" style="font-size:9px;transform:none;border-color:#ff9f1c;color:#ff9f1c">икры ↓</span></div></div>
+ <div style="position:absolute;left:16px;right:16px;bottom:92px"><div class="cta" style="transform:rotate(1deg)">НАЧАТЬ МИССИЮ</div></div>
+ ${tabs(0)}</div>`]);
+
+// WASTED
+P.push(['Серия прервана · WASTED', `<div class="scr">${sunset()}
+ <div style="position:absolute;left:50%;top:150px;transform:translateX(-50%)">${fig(.55,{stage:3,w:270,h:468})}</div>${hud()}
+ <div class="wasted"><div class="band"><div class="t">WASTED</div><div class="s">СЕРИЯ 3 НЕДЕЛИ ПРЕРВАНА</div><div style="font:11px Oswald;color:#ccc;letter-spacing:.1em;margin-top:8px">7 ДНЕЙ БЕЗ ТРЕНИРОВОК · −1 ★</div></div>
+ <div style="position:absolute;left:16px;right:16px;bottom:92px"><div class="cta">ВЕРНУТЬСЯ В ЗАЛ</div></div></div>${tabs(0)}</div>`]);
+
+// MISSION PASSED (новый стиль)
+P.push(['Итоги · MISSION PASSED', `<div class="scr">${sunset()}
+ <div style="position:absolute;left:50%;top:170px;transform:translateX(-50%)">${fig(.55,{stage:3,w:250,h:433,muscles:{today:['chest','triceps','front_delts','quads','glutes']}})}</div>
+ <div style="position:absolute;left:0;right:0;top:40px;text-align:center"><div class="bowl gold" style="font-size:40px;line-height:1">MISSION PASSED!</div><div class="bowl" style="font-size:18px;color:#fff;-webkit-text-stroke:1px #000;text-shadow:3px 3px 0 #000;margin-top:4px">RESPECT +</div><div class="mono yellow" style="font-size:44px;margin-top:2px">168</div></div>
+ <div style="position:absolute;left:16px;right:16px;bottom:150px;background:rgba(0,0,0,.78);border:3px solid #000;padding:10px 12px;color:#fff;font:12px 'Rubik Mono One'">
+  <div style="display:flex;justify-content:space-between;padding:3px 0"><span>МИССИЯ</span><span style="color:#f5c542">+50</span></div><div style="display:flex;justify-content:space-between;padding:3px 0"><span>ТОННАЖ 1213</span><span style="color:#f5c542">+12</span></div><div style="display:flex;justify-content:space-between;padding:3px 0"><span>★ РЕКОРД ЖИМ 82.5</span><span style="color:#f5c542">+40</span></div><div style="display:flex;justify-content:space-between;padding:3px 0"><span>★ 1ПМ ЖИМ 96</span><span style="color:#f5c542">+60</span></div>
+  <div style="margin-top:6px;padding-top:6px;border-top:2px solid #333;color:#49b84a">🏆 ТРОФЕЙ: ЖИМ 80 · +150</div></div>
+ <div style="position:absolute;left:16px;right:16px;bottom:80px"><div class="cta">ОТЛИЧНО</div></div></div>`]);
+
+const only = new URLSearchParams(location.search).get('only');
+const host = document.getElementById('phones');
+P.forEach(([l, html], i) => { if (only && String(i + 1) !== only) return; host.insertAdjacentHTML('beforeend', `<div>${only ? '' : `<div class="label">${l}</div>`}<div class="phone" ${only ? 'style="border:0;border-radius:0;box-shadow:none"' : ''}>${html}</div></div>`); });
+if (only) { document.body.style.padding = '0'; document.querySelectorAll('h1,.sub').forEach(e => e.style.display = 'none'); }
+</script></body></html>

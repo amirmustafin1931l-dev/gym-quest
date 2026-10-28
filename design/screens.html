@@ -1,0 +1,141 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>GymQuest — экраны San Andreas</title>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0c0b;--panel:rgba(0,0,0,.55);--line:#3a342c;--gold:#f7b733;--gold2:#c8690a;--green:#7bd33a;--blue:#4fb3e8;--red:#e23c3c;--text:#eae6dc;--mut:#8a8275}
+body{margin:0;background:#161616;color:var(--text);font-family:Inter,system-ui;padding:20px}
+h1{font:800 20px Inter;margin:0 0 4px}.sub{color:#999;margin-bottom:14px;font-size:13px}
+.row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.label{font:700 13px Inter;margin:0 0 8px;color:#fff}.label span{color:#999;font-weight:400}
+.phone{width:375px;height:812px;overflow:hidden;position:relative;border-radius:36px;border:6px solid #222;box-shadow:0 20px 60px rgba(0,0,0,.6);flex-shrink:0;background:radial-gradient(ellipse at 50% 15%,#2a2622,#0d0c0b 70%)}
+.scr{position:absolute;inset:0;overflow:hidden}
+.pad{padding:18px 16px 0}
+.t-russo{font-family:'Russo One';background:linear-gradient(#fff2b0,#f7b733 55%,#c8690a);-webkit-background-clip:text;color:transparent;filter:drop-shadow(2px 2px 0 #000);line-height:1}
+.osw{font-family:Oswald;letter-spacing:.12em;text-transform:uppercase}
+.mut{color:var(--mut)}
+.cash{font:700 22px Oswald;color:var(--green);text-shadow:1px 1px 0 #000}
+.panel{background:var(--panel);border:2px solid var(--line);padding:10px 12px}
+.panel.gold{border-color:var(--gold)}
+.bar{height:10px;background:#1a1816;border:1px solid var(--line)}.bar i{display:block;height:100%}
+.cta{height:52px;background:linear-gradient(#f7b733,#d9830f);color:#1a1200;font:400 17px 'Russo One';display:flex;align-items:center;justify-content:center;letter-spacing:.04em;box-shadow:0 4px 0 #6b3d00}
+.cta.dark{background:#1a1816;color:var(--gold);border:2px solid var(--line);box-shadow:none;font-size:14px}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:72px;display:flex;justify-content:space-around;align-items:center;padding-bottom:12px;background:#0b0a09;border-top:2px solid var(--line);color:var(--mut);font-family:Oswald}
+.tabs div{font-size:10px;text-align:center;letter-spacing:.08em;text-transform:uppercase}.tabs i{display:block;font-size:20px;font-style:normal;margin-bottom:3px}.tabs .on{color:var(--gold)}
+.chip{display:inline-block;padding:3px 8px;border:1px solid var(--line);font:500 11px Oswald;letter-spacing:.08em;text-transform:uppercase;color:#ddd;margin:2px 2px 0 0;background:rgba(0,0,0,.4)}
+.chip.g{border-color:#2f9c4f;color:#7bd33a}.chip.w{border-color:#b86a00;color:#ff9f1c;border-style:dashed}
+.stars{color:var(--gold);font-size:15px;letter-spacing:2px}.stars b{color:#3a342c}
+.set{display:grid;grid-template-columns:22px 1fr 1fr 24px;gap:8px;align-items:center;margin-top:6px}
+.set .in{height:38px;background:#1a1816;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font:600 17px Oswald}
+.set .n{font:500 12px Oswald;color:var(--mut);text-align:center}.set .x{color:var(--mut);text-align:center}
+.xrow{display:flex;justify-content:space-between;font:500 12.5px Oswald;letter-spacing:.06em;padding:4px 0;border-bottom:1px solid #2a2622}.xrow b{color:var(--gold)}
+.trophy{background:var(--panel);border:2px solid var(--line);padding:8px 6px;text-align:center}.trophy.on{border-color:var(--gold)}.trophy .ic{font-size:26px}.trophy.off .ic{filter:grayscale(1);opacity:.35}.trophy .n{font:500 10px Oswald;letter-spacing:.06em;text-transform:uppercase;margin-top:4px;color:#ddd}.trophy.off .n{color:var(--mut)}
+.pager{background:#0f1a10;border:2px solid #244a28;padding:10px 12px;font-family:Oswald;color:#9be38a;letter-spacing:.04em}
+.pager .hd{display:flex;justify-content:space-between;font-size:11px;color:#5aa05a;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.pager .msg{font-family:Inter;font-size:13px;color:#d6f5c9;line-height:1.4}
+.bars{display:flex;align-items:flex-end;gap:6px;height:110px;padding-top:10px}.bars i{flex:1;background:linear-gradient(#f7b733,#c8690a);border-top:2px solid #fff2b0;display:block}
+.axis{display:flex;justify-content:space-between;font:400 10px Oswald;color:var(--mut);letter-spacing:.06em;margin-top:4px}
+.srow{display:grid;grid-template-columns:92px 1fr 34px;gap:10px;align-items:center;font:500 12px Oswald;letter-spacing:.1em;text-transform:uppercase;color:#ddd;margin:5px 0}
+.srow .v{text-align:right;color:#fff}
+.hud{position:absolute;right:16px;top:16px;text-align:right}
+</style></head><body>
+<h1>GymQuest — экраны в стиле San Andreas</h1><div class="sub">Модель v3 (комикс), наборы экипировки переключаются в настройках героя. Шесть ключевых экранов.</div>
+<div class="row" id="phones"></div>
+<script src="figure.js?v=4"></script><script>
+const M = { today:['chest','triceps','front_delts','quads','glutes'], lagging:['lats','upper_back','calves'], load:{biceps:.6,forearms:.3,abs:.5,side_delts:.4,hamstrings:.5} };
+const fig = (b, o) => drawFigure(b, { gear:'street', ...o });
+const tabs = (on) => `<div class="tabs">${[['👤','Герой'],['🏋️','Миссия'],['📋','Упражн.'],['📈','Статы'],['📟','Тренер']].map(([i,n],k)=>`<div class="${k===on?'on':''}"><i>${i}</i>${n}</div>`).join('')}</div>`;
+const P = [];
+
+// 1. Герой
+P.push(['1 · Герой', `<div class="scr">
+ <div class="pad" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div><div class="t-russo" style="font-size:34px">АМИР</div><div class="osw" style="font-size:12px;color:var(--gold);margin-top:6px">Качок · 12 уровень · стадия 3/5</div></div>
+  <div style="text-align:right"><div class="cash">3 418 кг</div><div class="osw mut" style="font-size:9px">тоннаж</div><div class="stars" style="margin-top:4px">★★★<b>★★</b></div><div class="osw mut" style="font-size:9px">3 недели подряд</div></div>
+ </div>
+ <div class="pad" style="padding-top:12px"><div class="osw" style="display:flex;justify-content:space-between;font-size:11px;color:#bbb"><span>Respect</span><span>620 / 1 000</span></div><div class="bar" style="height:12px;margin-top:4px"><i style="width:62%;background:linear-gradient(90deg,#f7b733,#ffe08a)"></i></div></div>
+ <div style="position:absolute;left:50%;top:122px;transform:translateX(-50%)">${fig(.55,{stage:3,w:250,h:433,muscles:M})}</div>
+ <div style="position:absolute;right:16px;top:300px" class="panel gold osw" style="font-size:11px;padding:4px 8px"><span class="osw" style="font-size:11px;color:var(--gold)">↻ спина</span></div>
+ <div style="position:absolute;left:16px;right:16px;bottom:176px" class="panel">
+  <div class="osw" style="font-size:10px;color:var(--mut);margin-bottom:4px">Сегодня: <span class="chip g">грудь</span><span class="chip g">трицепс</span><span class="chip g">квадры</span> · Отстают: <span class="chip w">спина</span><span class="chip w">икры</span></div>
+  <div class="srow"><span>Muscle</span><div class="bar"><i style="width:58%;background:var(--gold)"></i></div><span class="v">58</span></div>
+  <div class="srow"><span>Stamina</span><div class="bar"><i style="width:31%;background:var(--green)"></i></div><span class="v">31</span></div>
+  <div class="srow"><span>Discipline</span><div class="bar"><i style="width:74%;background:var(--blue)"></i></div><span class="v">74</span></div>
+ </div>
+ <div style="position:absolute;left:16px;right:16px;bottom:92px" class="cta">НАЧАТЬ МИССИЮ</div>
+ ${tabs(0)}</div>`]);
+
+// 2. Миссия (тренировка)
+P.push(['2 · Миссия (запись тренировки)', `<div class="scr">
+ <div class="pad" style="display:flex;justify-content:space-between;align-items:flex-end">
+  <div><div class="osw mut" style="font-size:10px">Миссия идёт</div><div class="t-russo" style="font-size:30px">24:18</div></div>
+  <div style="text-align:right"><div class="cash" style="font-size:18px">1 213 кг</div><div class="osw mut" style="font-size:9px">тоннаж · 6 подходов</div></div>
+ </div>
+ <div class="pad" style="padding-top:12px">
+  <div class="panel gold">
+   <div style="display:flex;justify-content:space-between;align-items:center"><div><div class="osw" style="font-size:14px;color:#fff;letter-spacing:.06em">🛡️ Жим лёжа</div><div class="osw mut" style="font-size:9.5px">грудь · рекорд 82.5 кг</div></div><span class="mut">✕</span></div>
+   <div class="chip" style="margin-top:6px">🕒 прошлый раз: 80×5, 80×5, 80×5 — повторить</div>
+   <div class="set osw" style="font-size:9px;color:var(--mut);margin-top:8px"><span></span><span style="text-align:center">кг</span><span style="text-align:center">повт.</span><span></span></div>
+   <div class="set"><span class="n">1</span><div class="in">82,5</div><div class="in">5</div><span class="x">–</span></div>
+   <div class="set"><span class="n">2</span><div class="in">80</div><div class="in">5</div><span class="x">–</span></div>
+   <div class="set"><span class="n">3</span><div class="in" style="color:var(--mut)">80</div><div class="in" style="color:var(--mut)">5</div><span class="x">–</span></div>
+   <div class="cta dark" style="height:36px;margin-top:8px">+ ПОДХОД</div>
+  </div>
+  <div class="panel" style="margin-top:10px">
+   <div style="display:flex;justify-content:space-between;align-items:center"><div><div class="osw" style="font-size:14px;color:#fff;letter-spacing:.06em">🦵 Присед</div><div class="osw mut" style="font-size:9.5px">квадры, ягодицы · рекорд 100 кг</div></div><span class="mut">✕</span></div>
+   <div class="set"><span class="n">1</span><div class="in">100</div><div class="in">5</div><span class="x">–</span></div>
+   <div class="set"><span class="n">2</span><div class="in">100</div><div class="in">5</div><span class="x">–</span></div>
+   <div class="cta dark" style="height:36px;margin-top:8px">+ ПОДХОД</div>
+  </div>
+  <div class="cta dark" style="margin-top:10px;height:44px">+ УПРАЖНЕНИЕ</div>
+ </div>
+ <div style="position:absolute;left:16px;right:16px;bottom:92px;display:flex;gap:10px"><div class="cta dark" style="width:110px;color:var(--red)">ОТМЕНА</div><div class="cta" style="flex:1">🏁 ЗАВЕРШИТЬ</div></div>
+ ${tabs(1)}</div>`]);
+
+// 3. Mission passed
+P.push(['3 · Итоги: Mission Passed', `<div class="scr" style="background:radial-gradient(ellipse at 50% 30%,#2a2622,#000 70%)">
+ <div style="text-align:center;padding-top:34px"><div class="t-russo" style="font-size:38px">MISSION PASSED!</div><div class="osw" style="font-size:13px;color:#bbb;margin-top:8px">День груди · 24 мин · 6 подходов · 1 213 кг</div></div>
+ <div style="text-align:center;margin-top:14px"><div class="osw" style="font-size:12px;color:var(--mut)">Respect</div><div class="t-russo" style="font-size:56px">+168</div></div>
+ <div style="position:absolute;left:50%;top:188px;transform:translateX(-50%);opacity:.95">${fig(.55,{stage:3,w:150,h:260,muscles:{today:['chest','triceps','front_delts','quads','glutes']}})}</div>
+ <div class="panel gold" style="position:absolute;left:16px;right:16px;top:446px"><div class="osw" style="font-size:11px;color:var(--gold);margin-bottom:4px">Начислено</div>
+  <div class="xrow"><span>Миссия выполнена</span><b>+50</b></div><div class="xrow"><span>Подходы ×6</span><b>+12</b></div><div class="xrow"><span>Тоннаж 1 213 кг</span><b>+12</b></div><div class="xrow"><span>★ Рекорд веса: жим 82.5 кг</span><b>+40</b></div><div class="xrow" style="border:0"><span>★ Рекорд 1ПМ: жим 96 кг</span><b>+60</b></div></div>
+ <div class="panel" style="position:absolute;left:16px;right:16px;top:646px;border-color:#2f9c4f;display:flex;gap:10px;align-items:center"><span style="font-size:26px">🏆</span><div><div class="osw" style="font-size:12px;color:var(--green)">Новый трофей</div><div class="osw" style="font-size:13px;color:#fff;letter-spacing:.04em">Жим лёжа 80 · +150 Respect</div></div></div>
+ <div style="position:absolute;left:16px;right:16px;bottom:24px" class="cta">ОТЛИЧНО</div></div>`]);
+
+// 4. Статы
+P.push(['4 · Статы (прогресс)', `<div class="scr">
+ <div class="pad" style="display:flex;justify-content:space-between;align-items:flex-end"><div class="t-russo" style="font-size:30px">СТАТЫ</div><div class="osw" style="font-size:11px;color:var(--mut)">4 нед · <span style="color:#fff">12 нед</span> · полгода</div></div>
+ <div class="pad" style="padding-top:12px"><div class="panel gold" style="display:flex;justify-content:space-between;align-items:center"><div><div class="t-russo" style="font-size:22px">РОСТ ↑</div><div class="osw mut" style="font-size:10px">последние 4 недели к предыдущим</div></div><div style="text-align:right;font-family:Oswald;font-size:12px;line-height:1.5"><div>Тоннаж <b style="color:var(--green)">+18%</b></div><div>Тренировок <b style="color:var(--green)">+2</b></div><div>Сила <b style="color:var(--green)">+4%</b></div><div>Вес тела <b style="color:#ddd">−0,8 кг</b></div></div></div></div>
+ <div class="pad" style="padding-top:10px"><div class="panel"><div class="osw" style="font-size:11px;color:#bbb;display:flex;justify-content:space-between"><span>Тоннаж по неделям</span><span class="mut">кг</span></div>
+  <div class="bars">${[30,45,40,60,55,70,65,80,72,90,85,100].map(h=>`<i style="height:${h}%"></i>`).join('')}</div><div class="axis"><span>10 авг</span><span>21 сент</span><span>26 окт</span></div></div></div>
+ <div class="pad" style="padding-top:10px"><div class="panel"><div class="osw" style="font-size:11px;color:#bbb;margin-bottom:4px">Баланс мышц · 30 дней</div>
+  ${[['Грудь',100,''],['Квадры',85,''],['Трицепс',70,''],['Ягодицы',60,''],['Плечи',45,''],['Бицепс',40,''],['Спина',20,'w'],['Икры',10,'w']].map(([n,v,w])=>`<div class="srow" style="margin:3px 0"><span style="${w?'color:#ff9f1c':''}">${n}</span><div class="bar" style="height:7px"><i style="width:${v}%;background:${w?'#ff9f1c':'var(--gold)'}"></i></div><span class="v">${Math.round(v/5)}</span></div>`).join('')}</div></div>
+ <div class="pad" style="padding-top:10px"><div class="panel" style="display:flex;justify-content:space-between;align-items:center"><div><div class="osw" style="font-size:11px;color:#bbb">Вес тела</div><div class="cash" style="font-size:20px;color:#fff">78,4 кг</div></div><div class="cta dark" style="height:34px;width:110px">ЗАПИСАТЬ</div></div></div>
+ ${tabs(3)}</div>`]);
+
+// 5. Тренер — пейджер
+P.push(['5 · Тренер (пейджер + звонок ИИ)', `<div class="scr">
+ <div class="pad" style="display:flex;justify-content:space-between;align-items:flex-end"><div class="t-russo" style="font-size:30px">ТРЕНЕР</div><div class="osw" style="font-size:10px;color:var(--mut)">📟 3 новых</div></div>
+ <div class="pad" style="padding-top:12px;display:grid;gap:8px">
+  <div class="pager"><div class="hd"><span>Тренер · пейджер</span><span>сегодня</span></div><div class="msg">🎯 Отстают спина и икры. За 30 дней на них меньше всего подходов. Добавь тягу в наклоне и подъёмы на носки — +25 Respect за каждую мышцу.</div></div>
+  <div class="pager"><div class="hd"><span>Тренер · пейджер</span><span>вчера</span></div><div class="msg">🧱 Плато: присед 100 кг четыре тренировки без роста 1ПМ. Попробуй 102,5 × 3 или неделю разгрузки на 80%.</div></div>
+  <div class="pager"><div class="hd"><span>Тренер · пейджер</span><span>пн</span></div><div class="msg">🔥 3,5 тренировки в неделю — зона роста. Следи за сном и белком: 1,6–2 г на кг веса.</div></div>
+ </div>
+ <div style="position:absolute;left:16px;right:16px;bottom:92px">
+  <div class="panel gold" style="margin-bottom:10px"><div class="osw" style="font-size:11px;color:var(--gold)">ИИ-тренер · claude-opus-5-5</div><div style="font-size:12.5px;color:#ccc;margin-top:4px">Разбор всех тренировок, план на 2 недели, ответ на любой вопрос.</div><div style="margin-top:8px;display:flex;gap:8px"><div class="cta dark" style="flex:1;height:38px">❓ ВОПРОС</div><div class="cta" style="flex:1.4;height:38px;font-size:14px">📞 ПОЗВОНИТЬ ТРЕНЕРУ</div></div></div>
+ </div>
+ ${tabs(4)}</div>`]);
+
+// 6. Трофеи
+const tro = [['🥾','Первый шаг',1],['🔟','Десятка',1],['🛡️','Жим 60',1],['🛡️','Жим 80',1],['🦵','Присед 100',1],['⚓','Становая 100',0],['📅','Месяц подряд',0],['🏛️','Клуб 300',0],['🌀','Полный круг',0],['⚖️','Свой вес',0],['🏋️','10 тонн',1],['❤️','Сердце бойца',0]];
+P.push(['6 · Трофеи (достижения)', `<div class="scr">
+ <div class="pad" style="display:flex;justify-content:space-between;align-items:flex-end"><div class="t-russo" style="font-size:30px">ТРОФЕИ</div><div class="osw" style="font-size:11px;color:var(--mut)">6 / 52 · 760 Respect</div></div>
+ <div class="pad" style="padding-top:10px"><div class="bar" style="height:12px"><i style="width:12%;background:linear-gradient(90deg,#f7b733,#ffe08a)"></i></div></div>
+ <div class="pad" style="padding-top:12px"><div class="osw" style="font-size:11px;color:var(--gold);margin-bottom:6px">Сила</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">${tro.slice(0,8).map(([i,n,on])=>`<div class="trophy ${on?'on':'off'}"><div class="ic">${i}</div><div class="n">${n}</div></div>`).join('')}</div></div>
+ <div class="pad" style="padding-top:12px"><div class="osw" style="font-size:11px;color:var(--gold);margin-bottom:6px">Дисциплина и объём</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">${tro.slice(8).map(([i,n,on])=>`<div class="trophy ${on?'on':'off'}"><div class="ic">${i}</div><div class="n">${n}</div></div>`).join('')}</div></div>
+ <div class="pad" style="padding-top:12px"><div class="panel"><div class="osw" style="font-size:11px;color:#bbb">Ближайший трофей</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><div class="osw" style="font-size:13px;color:#fff;letter-spacing:.04em">⚓ Становая 100 кг</div><span class="osw" style="font-size:11px;color:var(--gold)">90 / 100</span></div><div class="bar" style="height:7px;margin-top:6px"><i style="width:90%;background:var(--gold)"></i></div></div></div>
+ ${tabs(0)}</div>`]);
+
+const only = new URLSearchParams(location.search).get('only');
+const host = document.getElementById('phones');
+P.forEach(([l, html], i) => { if (only && String(i + 1) !== only) return; host.insertAdjacentHTML('beforeend', `<div>${only ? '' : `<div class="label">${l}</div>`}<div class="phone" ${only ? 'style="border:0;border-radius:0;box-shadow:none"' : ''}>${html}</div></div>`); });
+if (only) { document.body.style.padding = '0'; document.querySelectorAll('h1,.sub').forEach(e => e.style.display = 'none'); }
+</script></body></html>

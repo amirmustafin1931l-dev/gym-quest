@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import type { Exercise, MuscleId } from '../types';
 import { useStore } from '../store';
 import { Card, Empty, Segmented } from '../components/ui';
+import { Sunset } from '../components/gta';
 import { ExerciseList, KIND_LABEL, NewExerciseForm } from '../components/ExercisePicker';
 import { Lines, Bars } from '../components/charts';
 import { CATEGORIES, MUSCLES } from '../data/muscles';
@@ -19,7 +20,8 @@ export const ExercisesScreen = ({ selectedId, muscle, onSelect, onBack }: { sele
     const list = exercises.filter((e) => e.primary.includes(muscle) || e.secondary.includes(muscle)).sort((a, b) => Number(b.primary.includes(muscle)) - Number(a.primary.includes(muscle)));
     return (
       <div className="screen">
-        <div className="row"><button className="btn icon ghost" onClick={onBack}>←</button><h1 style={{ fontSize: 20 }}>{MUSCLES[muscle].name}</h1></div>
+        <Sunset /><div className="halftone" />
+        <div className="head" style={{ minHeight: 0 }}><button className="icon-btn" onClick={onBack}>←</button><div className="tag sm" style={{ textAlign: 'right' }}>{MUSCLES[muscle].name.toUpperCase()}</div></div>
         <Card title="Упражнения на эту мышцу">
           <div className="list">
             {list.map((e) => (
@@ -36,8 +38,9 @@ export const ExercisesScreen = ({ selectedId, muscle, onSelect, onBack }: { sele
 
   return (
     <div className="screen">
-      <div className="row between">
-        <h1 style={{ fontSize: 20 }}>Упражнения</h1>
+      <Sunset /><div className="halftone" />
+      <div className="head" style={{ minHeight: 0 }}>
+        <div className="row"><button className="icon-btn" onClick={onBack}>←</button><div className="tag sm">УПРАЖНЕНИЯ</div></div>
         <button className="btn sm" onClick={() => setCreating((v) => !v)}>{creating ? 'К списку' : '+ Своё'}</button>
       </div>
       <Card>
@@ -86,11 +89,12 @@ const ExerciseDetail = ({ def, onBack }: { def: Exercise; onBack: () => void }) 
 
   return (
     <div className="screen">
-      <div className="row">
-        <button className="btn icon ghost" onClick={onBack} aria-label="Назад">←</button>
-        <div className="grow">
-          <h1 style={{ fontSize: 20 }}>{def.name}</h1>
-          <div className="small muted">{CATEGORIES[def.category].name} · {def.primary.map((m) => MUSCLES[m].short).join(', ')}{def.secondary.length ? ` (+ ${def.secondary.map((m) => MUSCLES[m].short).join(', ')})` : ''}</div>
+      <Sunset /><div className="halftone" />
+      <div className="head" style={{ minHeight: 0, alignItems: 'center' }}>
+        <button className="icon-btn" onClick={onBack} aria-label="Назад">←</button>
+        <div className="grow" style={{ textAlign: 'right' }}>
+          <div className="tag sm">{def.name.toUpperCase()}</div>
+          <div className="tiny mut" style={{ marginTop: 4 }}>{CATEGORIES[def.category].name} · {def.primary.map((m) => MUSCLES[m].short).join(', ')}{def.secondary.length ? ` (+ ${def.secondary.map((m) => MUSCLES[m].short).join(', ')})` : ''}</div>
         </div>
       </div>
 

@@ -41,8 +41,8 @@ export const initTelegram = () => {
     tg.ready();
     tg.expand();
     tg.disableVerticalSwipes?.();
-    tg.setHeaderColor?.('#0f1221');
-    tg.setBackgroundColor?.('#0f1221');
+    tg.setHeaderColor?.('#0d0c0b');
+    tg.setBackgroundColor?.('#0d0c0b');
   } catch { /* старые клиенты */ }
 };
 

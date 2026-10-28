@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>GymQuest — макеты</title>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Oswald:wght@500;700&family=Unbounded:wght@700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#111;color:#eee;font-family:Inter,system-ui;padding:24px}
+h1{font:800 22px Inter;margin:0 0 6px}
+.sub{color:#999;margin-bottom:18px}
+.row{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+.phone{width:375px;height:812px;border-radius:40px;overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6);border:6px solid #222;flex-shrink:0}
+.label{font:700 14px Inter;margin:10px 0 8px;color:#fff}
+.label span{color:#999;font-weight:400}
+.screen{position:absolute;inset:0;overflow:hidden}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:72px;display:flex;justify-content:space-around;align-items:center;padding-bottom:12px}
+.tabs div{font-size:10px;text-align:center;letter-spacing:.06em;text-transform:uppercase}
+.tabs i{display:block;font-size:20px;font-style:normal;margin-bottom:3px}
+.fig{position:absolute}
+section{margin-top:40px}
+
+/* ===== A: San Andreas ===== */
+.A .screen{background:radial-gradient(ellipse at 50% 20%,#2a2622,#0d0c0b 70%)}
+.A .top{padding:20px 18px 0;display:flex;justify-content:space-between;align-items:flex-start}
+.A .title{font:400 34px 'Russo One';background:linear-gradient(#fff2b0,#f7b733 55%,#c8690a);-webkit-background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(2px 2px 0 #000);letter-spacing:.02em;line-height:1}
+.A .rank{font:500 13px Oswald;color:#f7b733;letter-spacing:.14em;text-transform:uppercase;margin-top:4px}
+.A .cash{font:700 22px Oswald;color:#7bd33a;text-shadow:1px 1px 0 #000;text-align:right}
+.A .cash small{display:block;font:400 10px Oswald;color:#9a9;letter-spacing:.1em}
+.A .stars{color:#f7b733;font-size:16px;letter-spacing:2px;text-align:right}
+.A .stars b{color:#444}
+.A .stat{position:absolute;left:18px;right:18px;bottom:176px;background:rgba(0,0,0,.55);border:2px solid #3a342c;padding:10px 12px}
+.A .stat .r{display:grid;grid-template-columns:92px 1fr 34px;gap:10px;align-items:center;font:500 12px Oswald;letter-spacing:.1em;text-transform:uppercase;color:#ddd;margin:5px 0}
+.A .bar{height:10px;background:#1a1816;border:1px solid #3a342c}
+.A .bar i{display:block;height:100%}
+.A .cta{position:absolute;left:18px;right:18px;bottom:92px;height:52px;background:linear-gradient(#f7b733,#d9830f);color:#1a1200;font:400 18px 'Russo One';display:flex;align-items:center;justify-content:center;letter-spacing:.04em;box-shadow:0 4px 0 #6b3d00}
+.A .respect{position:absolute;left:18px;right:18px;top:90px}
+.A .respect .l{display:flex;justify-content:space-between;font:500 11px Oswald;letter-spacing:.12em;text-transform:uppercase;color:#bbb}
+.A .respect .bar{height:12px;margin-top:4px;background:#1a1816;border:1px solid #3a342c}
+.A .respect .bar i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#f7b733,#ffe08a)}
+.A .tabs{background:#0b0a09;border-top:2px solid #3a342c;color:#8a8275;font-family:Oswald}
+.A .tabs .on{color:#f7b733}
+.A .badge{position:absolute;right:18px;top:300px;background:#000;border:2px solid #f7b733;color:#f7b733;font:500 11px Oswald;padding:4px 8px;letter-spacing:.1em}
+
+/* ===== B: GTA V ===== */
+.B .screen{background:#0e0f14}
+.B .stripes{position:absolute;inset:0;background:
+ linear-gradient(135deg,rgba(255,138,216,.0) 0 42%,rgba(255,138,216,.25) 42% 52%,rgba(43,215,255,.25) 52% 60%,rgba(247,163,75,.22) 60% 68%,transparent 68%)}
+.B .top{padding:22px 18px 0;position:relative}
+.B .title{font:700 36px Oswald;letter-spacing:.02em;line-height:1;text-transform:uppercase}
+.B .rank{font:500 12px Oswald;letter-spacing:.2em;text-transform:uppercase;color:#ff8ad8;margin-top:4px}
+.B .xp{position:absolute;left:18px;right:18px;top:92px}
+.B .xp .l{display:flex;justify-content:space-between;font:500 11px Oswald;letter-spacing:.14em;text-transform:uppercase;color:#aab}
+.B .seg{display:flex;gap:3px;margin-top:5px}
+.B .seg i{flex:1;height:8px;background:#2a2d3a}
+.B .seg i.f{background:#fff}
+.B .skills{position:absolute;left:18px;right:18px;bottom:170px;background:rgba(14,15,20,.82);backdrop-filter:blur(6px);border-top:3px solid #ff8ad8;padding:10px 12px}
+.B .skills .r{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;font:500 11px Oswald;letter-spacing:.14em;text-transform:uppercase;color:#cfd3e6;margin:6px 0}
+.B .skills .seg{margin:0}
+.B .cta{position:absolute;left:18px;right:18px;bottom:92px;height:52px;background:#fff;color:#0e0f14;font:700 18px Oswald;letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;justify-content:center}
+.B .tabs{background:rgba(14,15,20,.9);border-top:1px solid #262a38;color:#8a8fa8;font-family:Oswald}
+.B .tabs .on{color:#fff}
+.B .pill{position:absolute;right:18px;top:24px;font:700 20px Oswald;color:#8fe388;text-align:right;line-height:1}
+.B .pill small{display:block;font:500 10px Oswald;letter-spacing:.14em;color:#8a8fa8}
+.B .tag{position:absolute;left:18px;top:300px;background:#2bd7ff;color:#0e0f14;font:700 11px Oswald;letter-spacing:.14em;padding:4px 8px;text-transform:uppercase}
+
+/* ===== C: Vice / Online ===== */
+.C .screen{background:#0a0614;background-image:linear-gradient(rgba(255,46,210,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,46,210,.08) 1px,transparent 1px);background-size:28px 28px}
+.C .glow{position:absolute;left:-40%;right:-40%;top:140px;height:380px;background:radial-gradient(ellipse at center,rgba(255,46,210,.35),rgba(0,229,255,.12) 45%,transparent 70%)}
+.C .top{padding:22px 18px 0;position:relative}
+.C .title{font:900 30px Unbounded;line-height:1;background:linear-gradient(90deg,#00e5ff,#ff2ed2);-webkit-background-clip:text;color:transparent;text-transform:uppercase}
+.C .rank{font:600 12px Inter;letter-spacing:.2em;text-transform:uppercase;color:#00e5ff;margin-top:6px}
+.C .xp{position:absolute;left:18px;right:18px;top:90px}
+.C .xp .l{display:flex;justify-content:space-between;font:600 11px Inter;letter-spacing:.1em;text-transform:uppercase;color:#9b93b8}
+.C .bar{height:10px;border-radius:99px;background:#1b1430;margin-top:5px;box-shadow:inset 0 0 0 1px #2d2250}
+.C .bar i{display:block;height:100%;width:62%;border-radius:99px;background:linear-gradient(90deg,#00e5ff,#ff2ed2);box-shadow:0 0 14px #ff2ed2}
+.C .card{position:absolute;left:18px;right:18px;bottom:170px;background:rgba(20,12,40,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,46,210,.4);border-radius:18px;padding:12px 14px;box-shadow:0 0 30px rgba(255,46,210,.2)}
+.C .card .r{display:grid;grid-template-columns:96px 1fr 30px;gap:10px;align-items:center;font:600 12px Inter;color:#d9d2f0;margin:6px 0}
+.C .card .bar{margin:0;height:8px}
+.C .card .bar i{width:var(--w);background:var(--c);box-shadow:0 0 10px var(--c)}
+.C .cta{position:absolute;left:18px;right:18px;bottom:92px;height:54px;border-radius:16px;background:linear-gradient(90deg,#00e5ff,#ff2ed2);color:#0a0614;font:800 16px Inter;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(0,229,255,.4)}
+.C .tabs{background:rgba(10,6,20,.9);border-top:1px solid #2d2250;color:#7d74a0}
+.C .tabs .on{color:#00e5ff;text-shadow:0 0 10px #00e5ff}
+.C .pill{position:absolute;right:18px;top:24px;font:800 20px Inter;color:#fff;text-align:right;line-height:1}
+.C .pill small{display:block;font:600 10px Inter;letter-spacing:.14em;color:#9b93b8}
+
+/* growth strip */
+.strip{display:flex;gap:10px;align-items:flex-end;background:#1a1a1a;padding:20px;border-radius:16px;width:fit-content}
+.strip .st{text-align:center;font:600 12px Inter;color:#ccc;width:200px}
+.strip .st small{display:block;color:#888;font-weight:400;margin-top:2px}
+</style></head><body>
+<h1>GymQuest — варианты дизайна</h1>
+<div class="sub">Три направления главного экрана «Герой» в стиле GTA. Персонаж одинаковый во всех трёх (стадия 3 из 5), меняются палитра, шрифты и HUD.</div>
+
+<div class="row" id="phones"></div>
+
+<section>
+<h1>Рост качка по уровням</h1>
+<div class="sub">Персонаж один и тот же, меняется «масса»: плечи, грудь, руки, шея, ноги, V-образность. Можно менять форму плавно на каждом уровне или ступенями по 5 стадиям.</div>
+<div class="strip" id="strip"></div>
+</section>
+
+<script>
+// Параметрический качок. b = масса 0..1. Возвращает SVG-разметку.
+function figure(b, o = {}) {
+  const skin = o.skin || '#d9a066', skin2 = o.skin2 || '#b97a45', top = o.top || '#f2f2f2', shorts = o.shorts || '#2b3a67', hair = o.hair || '#2a1a10';
+  const S = 68 + 46*b;            // полуширина плеч
+  const D = 20 + 17*b;            // радиус дельт
+  const W = 44 + 6*b;             // полуталия
+  const C = S - 8;                // полуширина груди
+  const NK = 12 + 9*b;            // полушея
+  const UA = 18 + 22*b;           // толщина плеча (руки)
+  const FA = 14 + 12*b;           // предплечье
+  const TH = 30 + 26*b;           // бедро
+  const SH = 20 + 12*b;           // голень
+  const trapH = 6 + 22*b;         // трапеции
+  const ey = 118;
+  const L = (x,y,x2,y2,w,c)=>`<line x1="${x}" y1="${y}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+  const E = (cx,cy,rx,ry,c,op=1)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${c}" opacity="${op}"/>`;
+  let s = `<svg viewBox="0 0 300 520" width="${o.w||300}" height="${o.h||520}" xmlns="http://www.w3.org/2000/svg">`;
+  if (o.shadow !== false) s += E(150, 508, 60+30*b, 10, 'rgba(0,0,0,.45)');
+  // ноги
+  for (const k of [-1,1]) {
+    const hx = 150 + k*(26+4*b), kx = 150 + k*(30+4*b), ax = 150 + k*(30+2*b);
+    s += L(hx, 300, kx, 400, TH, skin2);
+    s += L(kx, 400, ax, 495, SH, skin);
+    s += E(kx + k*2, 440, SH*0.62, 28, skin2, .9);               // икры
+    s += E(hx + k*2, 345, TH*0.52, 46, skin, .95);               // квадры
+    s += `<rect x="${ax-18-6*b}" y="486" width="${36+12*b}" height="20" rx="8" fill="#1b1b1b"/>`;
+  }
+  // шорты
+  s += `<path d="M${150-W-10} 258 L${150+W+10} 258 L${150+W+22+8*b} 330 L${150+6} 330 L150 300 L${150-6} 330 L${150-W-22-8*b} 330 Z" fill="${shorts}"/>`;
+  // торс (кожа) + майка
+  s += `<path d="M${150-C} 108 L${150+C} 108 L${150+W+8} 262 L${150-W-8} 262 Z" fill="${skin}"/>`;
+  s += `<path d="M${150-C+14} 108 L${150-C+34} 108 Q150 ${150+10*b} ${150+C-34} 108 L${150+C-14} 108 L${150+W+8} 262 L${150-W-8} 262 Z" fill="${top}"/>`;
+  // грудь под майкой (объём)
+  for (const k of [-1,1]) s += E(150 + k*(22+10*b), 150, 26+14*b, 18+10*b, 'rgba(0,0,0,.08)');
+  // пресс
+  if (b > .35) for (let i=0;i<3;i++) s += `<rect x="${150-20-6*b}" y="${178+i*24}" width="${40+12*b}" height="18" rx="6" fill="rgba(0,0,0,${0.06+0.1*(b-.35)})"/>`;
+  // шея и голова
+  s += `<rect x="${150-NK}" y="82" width="${NK*2}" height="34" fill="${skin2}"/>`;
+  // трапеции
+  s += `<path d="M${150-NK} 92 L${150-S+6} ${108+trapH*0.3} L${150-S+6} 108 Z M${150+NK} 92 L${150+S-6} ${108+trapH*0.3} L${150+S-6} 108 Z" fill="${skin2}"/>`;
+  s += `<path d="M${150-NK-2} ${100-trapH*0.5} Q150 ${84-trapH} ${150+NK+2} ${100-trapH*0.5} L${150+S-10} 108 L${150-S+10} 108 Z" fill="${skin}"/>`;
+  // руки
+  for (const k of [-1,1]) {
+    const sx = 150 + k*S, ex = 150 + k*(S+12+6*b), wx = 150 + k*(S+22+6*b);
+    s += L(sx, ey+4, ex, 222, UA, skin);
+    s += E((sx+ex)/2 + k*UA*0.25, 172, UA*0.62, 26+8*b, skin2, .85);   // бицепс
+    s += L(ex, 222, wx, 318, FA, skin);
+    s += E((ex+wx)/2 + k*2, 262, FA*0.6, 30, skin2, .6);                 // предплечье
+    s += `<circle cx="${wx}" cy="328" r="${11+3*b}" fill="${skin2}"/>`;
+    s += `<circle cx="${sx}" cy="${ey}" r="${D}" fill="${skin}"/>`;       // дельта
+    s += `<circle cx="${sx - k*D*0.2}" cy="${ey-D*0.2}" r="${D*0.55}" fill="rgba(255,255,255,.14)"/>`;
+  }
+  // голова
+  s += `<ellipse cx="150" cy="58" rx="${27+3*b}" ry="31" fill="${skin}"/>`;
+  s += `<path d="M${123-3*b} 52 Q150 ${14-2*b} ${177+3*b} 52 L${175+3*b} 44 Q150 26 ${125-3*b} 44 Z" fill="${hair}"/>`;
+  s += `<circle cx="139" cy="60" r="2.4" fill="#222"/><circle cx="161" cy="60" r="2.4" fill="#222"/>`;
+  s += `<path d="M141 74 Q150 ${78+4*b} 159 74" stroke="#7a4a2a" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+  s += '</svg>';
+  return s;
+}
+
+const phones = document.getElementById('phones');
+const stageNames = ['Новичок с района','Подтянутый','Качок','Бодибилдер','Монстр массы'];
+const fig = (b, w, h, o) => `<div class="fig" style="left:50%;transform:translateX(-50%);top:150px">${figure(b,{w,h,...o})}</div>`;
+
+phones.innerHTML = `
+<div>
+ <div class="label">A · San Andreas <span>— золото, оранжевый, «Respect» и звёзды розыска как серия</span></div>
+ <div class="phone A"><div class="screen">
+  <div class="top"><div><div class="title">АМИР</div><div class="rank">Качок · 12 уровень</div></div>
+   <div><div class="cash">3 418 кг<small>ТОННАЖ</small></div><div class="stars">★★★<b>★★</b></div></div></div>
+  <div class="respect"><div class="l"><span>Respect</span><span>620 / 1 000</span></div><div class="bar"><i></i></div></div>
+  ${fig(.5, 300, 420)}
+  <div class="badge">СТАДИЯ 3 / 5</div>
+  <div class="stat">
+   <div class="r"><span>Muscle</span><div class="bar"><i style="width:58%;background:#f7b733"></i></div><span>58</span></div>
+   <div class="r"><span>Stamina</span><div class="bar"><i style="width:31%;background:#7bd33a"></i></div><span>31</span></div>
+   <div class="r"><span>Discipline</span><div class="bar"><i style="width:74%;background:#4fb3e8"></i></div><span>74</span></div>
+  </div>
+  <div class="cta">НАЧАТЬ МИССИЮ</div>
+  <div class="tabs"><div class="on"><i>👤</i>Герой</div><div><i>🏋️</i>Качалка</div><div><i>📋</i>Упражнения</div><div><i>📈</i>Статы</div><div><i>📟</i>Тренер</div></div>
+ </div></div>
+</div>
+<div>
+ <div class="label">B · GTA V <span>— чёрный, пастельный неон загрузочного экрана, сегментные шкалы навыков</span></div>
+ <div class="phone B"><div class="screen"><div class="stripes"></div>
+  <div class="top"><div class="title">Амир</div><div class="rank">Rank 12 · Качок</div></div>
+  <div class="pill">3 418 кг<small>ТОННАЖ</small></div>
+  <div class="xp"><div class="l"><span>RP</span><span>620 / 1 000</span></div><div class="seg">${'<i class="f"></i>'.repeat(12)}${'<i></i>'.repeat(8)}</div></div>
+  ${fig(.5, 300, 420, {top:'#1c1e2a', shorts:'#3b3f55'})}
+  <div class="tag">Стадия 3 / 5</div>
+  <div class="skills">
+   <div class="r"><span>Strength</span><div class="seg">${'<i class="f"></i>'.repeat(6)}${'<i></i>'.repeat(4)}</div></div>
+   <div class="r"><span>Stamina</span><div class="seg">${'<i class="f"></i>'.repeat(3)}${'<i></i>'.repeat(7)}</div></div>
+   <div class="r"><span>Discipline</span><div class="seg">${'<i class="f"></i>'.repeat(7)}${'<i></i>'.repeat(3)}</div></div>
+  </div>
+  <div class="cta">Начать тренировку</div>
+  <div class="tabs"><div class="on"><i>👤</i>Герой</div><div><i>🏋️</i>Трен</div><div><i>📋</i>Упр.</div><div><i>📈</i>Статы</div><div><i>📟</i>Тренер</div></div>
+ </div></div>
+</div>
+<div>
+ <div class="label">C · Vice / Online <span>— неон розовый и бирюза, сетка, свечение, более «игровой»</span></div>
+ <div class="phone C"><div class="screen"><div class="glow"></div>
+  <div class="top"><div class="title">Амир</div><div class="rank">LVL 12 · Качок</div></div>
+  <div class="pill">3 418 кг<small>ТОННАЖ</small></div>
+  <div class="xp"><div class="l"><span>XP</span><span>620 / 1 000</span></div><div class="bar"><i></i></div></div>
+  ${fig(.5, 300, 420, {top:'#111', shorts:'#1e1040'})}
+  <div class="card">
+   <div class="r"><span>💪 Сила</span><div class="bar"><i style="--w:58%;--c:#ff2ed2"></i></div><span>58</span></div>
+   <div class="r"><span>🫀 Выносл.</span><div class="bar"><i style="--w:31%;--c:#00e5ff"></i></div><span>31</span></div>
+   <div class="r"><span>📅 Дисципл.</span><div class="bar"><i style="--w:74%;--c:#ffd400"></i></div><span>74</span></div>
+  </div>
+  <div class="cta">Начать тренировку</div>
+  <div class="tabs"><div class="on"><i>👤</i>Герой</div><div><i>🏋️</i>Трен</div><div><i>📋</i>Упр.</div><div><i>📈</i>Статы</div><div><i>📟</i>Тренер</div></div>
+ </div></div>
+</div>`;
+
+const strip = document.getElementById('strip');
+strip.innerHTML = [0,.25,.5,.75,1].map((b,i)=>`<div class="st">${figure(b,{w:200,h:347})}<div>Стадия ${i+1}: ${stageNames[i]}<small>уровни ${['1–4','5–9','10–15','16–24','25+'][i]}</small></div></div>`).join('');
+
+// ?only=A|B|C|strip — показать один блок без полей (для скриншотов)
+const only = new URLSearchParams(location.search).get('only');
+if (only) {
+  document.body.style.padding = '0';
+  document.querySelectorAll('h1,.sub,.label,section > h1').forEach(e => e.style.display = 'none');
+  if (only === 'strip') { document.getElementById('phones').style.display = 'none'; document.querySelector('section').style.margin = '0'; document.querySelector('.strip').style.borderRadius = '0'; }
+  else {
+    document.querySelector('section').style.display = 'none';
+    [...phones.children].forEach((d, i) => { if ('ABC'[i] !== only) d.style.display = 'none'; });
+    const ph = phones.querySelector('.phone.' + only); ph.style.border = '0'; ph.style.borderRadius = '0'; ph.style.boxShadow = 'none';
+  }
+}
+</script>
+</body></html>

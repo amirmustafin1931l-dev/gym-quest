@@ -1,0 +1,26 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>GymQuest — модель качка</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#141414;color:#eee;font-family:Inter,system-ui;padding:24px}
+h1{font:800 20px Inter;margin:0 0 4px}.sub{color:#999;margin-bottom:14px;font-size:14px}
+section{margin-bottom:36px}
+.row{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
+.card{background:#1d1d1f;border-radius:14px;padding:14px 10px 10px;text-align:center}
+.card .t{font:700 13px Inter;margin-top:6px}.card .t small{display:block;color:#888;font-weight:400;margin-top:2px}
+.leg{display:flex;gap:16px;font-size:12px;color:#bbb;margin-top:10px}.leg i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+</style></head><body>
+<section id="styles"><h1>1. Стиль отрисовки модели</h1><div class="sub">Одна и та же стадия (3 из 5), три манеры: комикс как в арте GTA V, гладкий вектор, low-poly как модели San Andreas.</div><div class="row" id="s1"></div></section>
+<section id="growth"><h1>2. Рост и экипировка по уровням</h1><div class="sub">Масса растёт плавно каждый уровень; экипировка добавляется по стадиям: 1 — белая майка; 2 — повязка и напульсники; 3 — чёрная майка и пояс; 4 — цепь, очки, перчатки; 5 — золотая пряжка, татуировка.</div><div class="row" id="s2"></div></section>
+<section id="muscles"><h1>3. Мышцы на модели</h1><div class="sub">Модель заменяет карту мышц. Спереди и сзади, переключается свайпом. Пример: сегодня жим и присед, отстают спина и икры.</div><div class="row" id="s3"></div>
+<div class="leg"><span><i style="background:#39e07a"></i>проработано сегодня</span><span><i style="background:#ff9f1c;border:1px dashed #b86a00"></i>отстаёт за 30 дней</span><span><i style="background:#4fb3ff;opacity:.6"></i>нагрузка за 30 дней</span></div></section>
+<script src="figure.js"></script>
+<script>
+const card = (svg, t, sub) => `<div class="card">${svg}<div class="t">${t}${sub ? `<small>${sub}</small>` : ''}</div></div>`;
+document.getElementById('s1').innerHTML = [['comic','Комикс GTA V','контур + жёсткие тени'],['soft','Гладкий вектор','мягкие градиенты'],['poly','Low-poly','угловатый, как PS2']].map(([st,t,sub]) => card(drawFigure(.5,{style:st,w:240,h:416}), t, sub)).join('');
+const names = ['Новичок с района','Подтянутый','Качок','Бодибилдер','Монстр массы'], lv = ['ур. 1–4','ур. 5–9','ур. 10–15','ур. 16–24','ур. 25+'];
+document.getElementById('s2').innerHTML = [0,.25,.5,.75,1].map((b,i)=>card(drawFigure(b,{style:'comic',stage:i+1,w:200,h:347}), `${i+1}. ${names[i]}`, lv[i])).join('');
+const M = { today:['chest','triceps','front_delts','quads','glutes'], lagging:['lats','upper_back','calves','rear_delts'], load:{biceps:.6,forearms:.3,abs:.5,side_delts:.4,hamstrings:.5,lower_back:.3} };
+document.getElementById('s3').innerHTML = card(drawFigure(.55,{style:'comic',stage:3,w:240,h:416,muscles:M}),'Спереди') + card(drawFigure(.55,{style:'comic',stage:3,view:'back',w:240,h:416,muscles:M}),'Сзади');
+const only = new URLSearchParams(location.search).get('only');
+if (only) { document.body.style.padding='16px'; document.querySelectorAll('section').forEach(s => { if (s.id !== only) s.style.display='none'; }); }
+</script></body></html>

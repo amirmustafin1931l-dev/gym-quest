@@ -66,6 +66,16 @@ export interface Profile {
   xp: number;
   createdAt: string;
   apiKey?: string;
+  /** внешность героя */
+  look?: { skin: 'light' | 'tan' | 'brown' | 'dark'; hair: 'short' | 'bald' | 'afro' | 'mohawk' | 'long'; beard: 'none' | 'stubble' | 'full'; hairColor: string };
+  /** набор экипировки */
+  gear?: 'street' | 'pro' | 'gang';
+  /** лучшая серия недель, для экрана WASTED */
+  lastStreak?: number;
+  /** когда показывали WASTED в последний раз */
+  wastedAt?: string;
+  /** первый запуск: герой создан */
+  created?: boolean;
 }
 
 export interface AiNote { date: string; question?: string; text: string }
