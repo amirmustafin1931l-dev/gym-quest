@@ -4,6 +4,12 @@ import { PROGRAMS } from '../data/programs';
 import { CYCLE_WEEKS, nextProgramDay, programWeek } from '../lib/programs';
 import { toast } from '../lib/toast';
 import { haptic } from '../lib/telegram';
+import { DEFAULT_DAYS } from '../lib/schedule';
+
+const PRESET: Record<string, { style: 'fullbody' | 'split'; days: number[] }> = {
+  fullbody3: { style: 'fullbody', days: DEFAULT_DAYS[3] }, upperlower4: { style: 'split', days: DEFAULT_DAYS[4] },
+  ppl: { style: 'split', days: DEFAULT_DAYS[3] }, ulppl: { style: 'split', days: DEFAULT_DAYS[5] },
+};
 
 export const ProgramsScreen = ({ onBack }: { onBack: () => void }) => {
   const { state, dispatch, exMap } = useStore();
@@ -45,8 +51,8 @@ export const ProgramsScreen = ({ onBack }: { onBack: () => void }) => {
                     ))}
                   </div>
                   {on
-                    ? <Cta danger className="sm" onClick={() => { dispatch({ type: 'setProgram', id: null }); toast('Программа отключена'); }} style={{ marginTop: 10 }}>Отключить</Cta>
-                    : <Cta onClick={() => { haptic('success'); dispatch({ type: 'setProgram', id: p.id }); toast(`Программа «${p.short}» выбрана`); onBack(); }} style={{ marginTop: 10 }}>Выбрать</Cta>}
+                    ? <Cta danger className="sm" onClick={() => { dispatch({ type: 'setProgram', id: null }); toast('Программа отключена'); }} style={{ marginTop: 10 }}>Отключить программу</Cta>
+                    : <Cta onClick={() => { haptic('success'); const pr = PRESET[p.id]; dispatch({ type: 'setSchedule', style: pr.style, days: pr.days }); toast(`«${p.short}» разложена по неделе — дни можно поменять`); onBack(); }} style={{ marginTop: 10 }}>Выбрать</Cta>}
                 </Panel>
               );
             })}

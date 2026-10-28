@@ -6,6 +6,7 @@ import { type ExerciseMap, exerciseBests, exerciseHistory, isSetFilled } from '.
 import type { Look, GearId } from './figure';
 import { programById } from '../data/programs';
 import { buildProgramDay, describeSet, programWeek } from './programs';
+import { WEEKDAY_NAMES, isTrainingDay } from './schedule';
 
 export interface Coach { id: CoachId; name: string; tagline: string; online: string; hello: string; placeholder: string; look: Look; gear: GearId; stage: number }
 export const COACHES: Coach[] = [
@@ -48,6 +49,7 @@ export const buildCoachSummary = (state: AppState, ex: ExerciseMap) => {
   const used = [...new Set(state.workouts.flatMap((w) => w.entries.map((e) => e.exerciseId)))];
   const e1 = used.map((id) => { const d = ex.get(id); if (!d || d.kind !== 'weight') return ''; const b = exerciseBests(exerciseHistory(state.workouts, id, d)); return b.bestE1rm ? `${d.name} ${Math.round(b.bestE1rm)}` : ''; }).filter(Boolean);
   if (e1.length) lines.push(`Лучшие расчётные 1ПМ, кг: ${e1.join('; ')}.`);
+  if (state.schedule) lines.push(`Расписание игрока: ${state.schedule.style === 'fullbody' ? 'Full Body' : 'сплит'}, дни — ${state.schedule.days.map((d) => WEEKDAY_NAMES[d]).join(', ')}. Сегодня по расписанию ${isTrainingDay(state) ? 'ДЕНЬ ТРЕНИРОВКИ' : 'ДЕНЬ ОТДЫХА — если игрок просит задание, предложи восстановление или лёгкую активность, тяжёлую тренировку — только если он настаивает'}.`);
   const prog = programById(state.program?.id);
   if (prog) {
     const d = buildProgramDay(state, ex);

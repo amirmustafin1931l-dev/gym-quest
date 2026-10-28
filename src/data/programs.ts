@@ -14,8 +14,9 @@ export interface Slot {
   why: string;          // зачем упражнение в этом дне
 }
 export interface ProgramDay { title: string; focus: string; slots: Slot[] }
+export type ProgramId = 'fullbody3' | 'upperlower4' | 'ppl' | 'ulppl';
 export interface Program {
-  id: 'fullbody3' | 'upperlower4' | 'ppl';
+  id: ProgramId;
   name: string;
   short: string;
   type: 'fullbody' | 'split';
@@ -154,6 +155,18 @@ export const PROGRAMS: Program[] = [
     ],
   },
 ];
+
+// Гибрид на 5 дней: силовые Верх/Низ + объёмные Тяни/Толкай/Ноги
+{
+  const ul = PROGRAMS.find((p) => p.id === 'upperlower4')!;
+  const ppl = PROGRAMS.find((p) => p.id === 'ppl')!;
+  PROGRAMS.push({
+    id: 'ulppl', name: 'Сплит Верх/Низ + Тяни/Толкай/Ноги', short: 'Гибрид 5', type: 'split', daysPerWeek: '5 дней', level: 'средний → продвинутый', goal: 'сила и масса',
+    description: 'Пять дней: в начале недели силовые Верх и Низ (4–6 повторов), затем объёмные Толкай, Тяни, Ноги. Каждая мышца дважды в неделю — сила и масса одновременно.',
+    schedule: 'Верх · Низ · Толкай · Тяни · Ноги',
+    days: [ul.days[0], ul.days[1], ppl.days[0], ppl.days[1], ppl.days[2]],
+  });
+}
 
 export const programById = (id?: string) => PROGRAMS.find((p) => p.id === id);
 

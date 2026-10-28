@@ -15,8 +15,9 @@ import { haptic } from '../lib/telegram';
 import { toast } from '../lib/toast';
 import { useClock } from './HeroScreen';
 import { TaskCard } from '../components/TaskCard';
-import { restSuggested, todayTask, trainedToday } from '../lib/programs';
-import { programById } from '../data/programs';
+import { CYCLE_WEEKS, programWeek, todayTask, trainedToday } from '../lib/programs';
+import { isTrainingDay, nextTrainingLabel, weekPlan } from '../lib/schedule';
+import { WeekList } from './ScheduleScreen';
 
 const levelTitle = (level: number) => [...LEVEL_TITLES].reverse().find(([l]) => level >= l)?.[1] ?? 'Новичок';
 const useElapsed = (startIso?: string) => {
@@ -38,7 +39,7 @@ export const missionName = (w: Workout, exMap: Map<string, Exercise>) => {
   return cats.map((c) => DAY_NAMES[c]).join(' + ').replace(' + ДЕНЬ', ' + ');
 };
 
-export const WorkoutScreen = ({ onExercise, onPrograms, onCoach }: { onExercise: (id: string) => void; onPrograms: () => void; onCoach: () => void }) => {
+export const WorkoutScreen = ({ onExercise, onPrograms, onCoach, onSchedule }: { onExercise: (id: string) => void; onPrograms: () => void; onCoach: () => void; onSchedule: () => void }) => {
   const { state, dispatch, exMap, finishWorkout } = useStore();
   const clock = useClock();
   const [picker, setPicker] = useState(false);
@@ -61,7 +62,7 @@ export const WorkoutScreen = ({ onExercise, onPrograms, onCoach }: { onExercise:
           <Hud clock={clock} money={t.tonnage} bars={[]} stars={weekStreak(state.workouts)} compact />
         </div>
         <div className="z stack">
-          <TodayBlock onPrograms={onPrograms} onCoach={onCoach} />
+          <TodayBlock onPrograms={onPrograms} onCoach={onCoach} onSchedule={onSchedule} />
           <Cta dark onClick={() => { haptic('medium'); dispatch({ type: 'startWorkout' }); }}>＋ Свободная миссия без задания</Cta>
           <Panel>
             <div className="pm-title"><span>Журнал миссий</span></div>
@@ -198,36 +199,64 @@ export const MissionPassed = ({ summary, onClose }: { summary: WorkoutSummary | 
 };
 
 /** Блок «задание на сегодня» над журналом миссий */
-const TodayBlock = ({ onPrograms, onCoach }: { onPrograms: () => void; onCoach: () => void }) => {
+const TodayBlock = ({ onPrograms, onCoach, onSchedule }: { onPrograms: () => void; onCoach: () => void; onSchedule: () => void }) => {
   const { state, exMap, dispatch } = useStore();
+  const [anyway, setAnyway] = useState(false);
   const task = useMemo(() => todayTask(state, exMap), [state, exMap]);
+  const rows = useMemo(() => weekPlan(state, (id) => exMap.get(id)?.name), [state, exMap]);
   const done = trainedToday(state);
-  if (!state.program && !task) {
+  const sched = state.schedule;
+  const weekBtn = <Cta dark className="sm" onClick={onSchedule}>📅 Неделя{state.program ? ` ${programWeek(state.program.start)}/${CYCLE_WEEKS}` : ''} · расписание</Cta>;
+
+  if (!sched && !task) {
     return (
       <Panel>
         <div className="pm-title"><span>Задание на сегодня</span></div>
-        <p className="small t2">Выбери программу — Full Body или сплит — и игра каждый день будет выдавать тренировку с весами, рассчитанными по твоему прогрессу. Или попроси задание у тренера.</p>
+        <p className="small t2">Настрой неделю: выбери Full Body или сплит и дни тренировок. Игра разложит программу по календарю и каждый день будет выдавать тренировку с весами по твоему прогрессу.</p>
         <div className="row" style={{ marginTop: 10 }}>
-          <Cta onClick={onPrograms} style={{ flex: 1 }}>📋 Выбрать программу</Cta>
-          <Cta dark onClick={onCoach} style={{ flex: 1 }}>📱 Тренер</Cta>
+          <Cta onClick={onSchedule} style={{ flex: 1 }}>📅 Настроить неделю</Cta>
+          <Cta dark onClick={onCoach} style={{ width: 120 }}>📱 Тренер</Cta>
         </div>
       </Panel>
     );
   }
   if (done) {
     return (
-      <Panel>
-        <div className="pm-title"><span>✓ Сегодня миссия выполнена</span></div>
-        <p className="small t2">Мышцы растут на отдыхе. {task ? `Следующее задание: «${task.title}».` : ''}</p>
-        {state.program && <Cta dark className="sm" onClick={onPrograms} style={{ marginTop: 8 }}>{programById(state.program.id)?.name} · сменить</Cta>}
-      </Panel>
+      <>
+        <Panel>
+          <div className="pm-title"><span>✓ Сегодня миссия выполнена</span></div>
+          <p className="small t2">Мышцы растут на отдыхе. Следующая тренировка — {nextTrainingLabel(rows)}.</p>
+        </Panel>
+        {sched && <WeekList rows={rows} compact />}
+        {weekBtn}
+      </>
+    );
+  }
+  const restDay = sched && !isTrainingDay(state) && task?.source !== 'coach';
+  if (restDay && !anyway) {
+    return (
+      <>
+        <section className="rest-card">
+          <div className="task-hd" style={{ color: '#8fd3ff' }}><span>☾ Сегодня отдых</span></div>
+          <div className="task-title">Восстановление</div>
+          <p className="small t2" style={{ marginTop: 8 }}>Мышцы растут на отдыхе. По желанию — 20–30 мин лёгкого кардио и растяжка. Белок 1,6–2 г на кг веса, сон 8 часов.</p>
+          {task && <p className="small green" style={{ marginTop: 6 }}>Следующая миссия: <b>{task.title}</b> — {nextTrainingLabel(rows)}</p>}
+          <div className="row" style={{ marginTop: 10 }}>
+            <Cta dark className="sm" onClick={() => { dispatch({ type: 'startWorkout' }); dispatch({ type: 'addEntry', exerciseId: 'walk' }); }} style={{ flex: 1 }}>🏃 Лёгкое кардио</Cta>
+            <Cta dark className="sm" onClick={() => setAnyway(true)} style={{ flex: 1 }} disabled={!task}>Всё равно тренируюсь</Cta>
+          </div>
+        </section>
+        <WeekList rows={rows} compact />
+        {weekBtn}
+      </>
     );
   }
   if (!task) return null;
   return (
     <>
-      {restSuggested(state) && task.source === 'program' && <div className="pager w"><div className="hd"><span>Тренер · пейджер</span><span>отдых</span></div><div className="msg">Вчера была миссия. В схеме на 3 дня лучше отдохнуть сегодня — но если чувствуешь силы, задание ниже.</div></div>}
-      <TaskCard task={task} onStart={() => dispatch({ type: 'startTask', task })} onChange={onPrograms} />
+      <TaskCard task={task} onStart={() => dispatch({ type: 'startTask', task })} onChange={sched ? onSchedule : onPrograms} />
+      {sched ? <WeekList rows={rows} compact /> : <Cta dark className="sm" onClick={onSchedule}>📅 Разложить программу по дням недели</Cta>}
+      {sched && weekBtn}
     </>
   );
 };

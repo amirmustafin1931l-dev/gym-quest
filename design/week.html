@@ -1,0 +1,120 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>GymQuest — неделя</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rubik+Spray+Paint&family=Bowlby+One+SC&family=Oswald:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#161616;color:#eee;font-family:Inter,system-ui;padding:20px}
+h1{font:800 20px Inter;margin:0 0 4px}.sub{color:#999;margin-bottom:14px;font-size:13px}
+.row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.label{font:700 13px Inter;margin:0 0 8px;color:#fff}
+.phone{width:375px;height:812px;overflow:hidden;position:relative;border-radius:36px;border:6px solid #222;box-shadow:0 20px 60px rgba(0,0,0,.6);flex-shrink:0;background:#0d0c0b}
+.scr{position:absolute;inset:0;overflow:hidden}
+.mono{font-family:'Rubik Mono One'}.bowl{font-family:'Bowlby One SC'}.spray{font-family:'Rubik Spray Paint'}.osw{font-family:Oswald;letter-spacing:.1em;text-transform:uppercase}
+.gold{background:linear-gradient(#fff2b0,#f7b733 55%,#c8690a);-webkit-background-clip:text;color:transparent;filter:drop-shadow(3px 3px 0 #000)}
+.tag{font-family:'Rubik Spray Paint';color:#f5c542;text-shadow:3px 3px 0 #000,0 0 14px rgba(245,197,66,.45)}
+.stencil{font:10px 'Rubik Mono One';color:#fff;background:#111;display:inline-block;padding:4px 8px;border:2px solid #fff;letter-spacing:.02em}
+.stencil.g{border-color:#49b84a;color:#8ff08a}.stencil.w{border-color:#ff9f1c;color:#ffb347}.stencil.y{border-color:#f5c542;color:#f5c542}
+.hud{position:absolute;right:14px;top:14px;text-align:right;line-height:1}
+.hud .clock{font:18px 'Rubik Mono One';color:#fff;-webkit-text-stroke:1px #000;text-shadow:2px 2px 0 #000}
+.hud .money{font:18px 'Rubik Mono One';color:#49b84a;-webkit-text-stroke:1px #000;text-shadow:2px 2px 0 #000;margin-top:4px}
+.hud .bars{margin-top:6px;display:grid;gap:3px;justify-items:end}.hud .b{width:120px;height:9px;background:rgba(0,0,0,.65);border:2px solid #000}.hud .b i{display:block;height:100%}
+.hud .stars{font-size:15px;letter-spacing:2px;color:#f5c542;-webkit-text-stroke:.8px #000;margin-top:4px}.hud .stars b{color:rgba(0,0,0,.55)}
+.hud .lbl{font:9px Oswald;letter-spacing:.14em;text-transform:uppercase;color:#ddd;text-shadow:1px 1px 0 #000;margin-top:2px}
+.radar{position:absolute;left:14px;bottom:250px;width:100px;height:100px;border-radius:50%;background:#0d1f0d;border:3px solid #111;box-shadow:0 0 0 2px #d9d9d9,0 6px 16px rgba(0,0,0,.6);overflow:hidden}
+.pm{background:rgba(0,0,0,.82);border:3px solid #000;box-shadow:inset 0 0 0 1px #3a342c;padding:10px 12px}
+.pm-row{display:grid;grid-template-columns:86px 1fr 32px;gap:10px;align-items:center;font:10px 'Rubik Mono One';color:#fff;margin:5px 0}
+.pm-row .bar{height:9px;background:#1a1a1a;border:2px solid #000;box-shadow:inset 0 0 0 1px #333}.pm-row .bar i{display:block;height:100%}.pm-row .v{text-align:right;color:#f5c542}
+.pm-tabs{display:flex;gap:14px;font:11px 'Rubik Mono One';color:#999}.pm-tabs .on{color:#fff;border-bottom:3px solid #f5c542;padding-bottom:3px}
+.cta{height:50px;background:linear-gradient(#f7c843,#d9930f);color:#1a1200;font:15px 'Rubik Mono One';display:flex;align-items:center;justify-content:center;border:3px solid #000;box-shadow:0 4px 0 #000}
+.cta.dark{background:#111;color:#f5c542;border-color:#f5c542;box-shadow:0 4px 0 #000;font-size:12px}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:70px;display:flex;justify-content:space-around;align-items:center;padding-bottom:10px;background:#000;border-top:3px solid #222;color:#999}
+.tabs div{font:9px 'Rubik Mono One';text-align:center;text-transform:uppercase}.tabs i{display:block;font-size:19px;font-style:normal;margin-bottom:4px}.tabs .on{color:#f5c542}
+.halftone{position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.28) 1.2px,transparent 1.4px);background-size:7px 7px;pointer-events:none;opacity:.6}
+.set{display:grid;grid-template-columns:20px 1fr 1fr 22px;gap:8px;align-items:center;margin-top:6px}
+.set .in{height:36px;background:#000;border:2px solid #444;display:flex;align-items:center;justify-content:center;font:15px 'Rubik Mono One';color:#fff}
+.set .n{font:10px 'Rubik Mono One';color:#999;text-align:center}.set .x{color:#999;text-align:center}
+.bars2{display:flex;align-items:flex-end;gap:5px;height:96px;padding-top:8px}.bars2 i{flex:1;background:#f5c542;border:2px solid #000;border-bottom:0;display:block}
+.lb{display:grid;grid-template-columns:28px 40px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:2px solid #1a1a1a;font:11px 'Rubik Mono One';color:#fff}
+.lb .pos{color:#f5c542}.lb .me{background:rgba(245,197,66,.12)}.lb .r{color:#49b84a;text-align:right}
+.mini{width:40px;height:40px;background:#1a1816;border:2px solid #000;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+</style><style>
+.seg2{display:flex;gap:8px}.seg2 div{flex:1;text-align:center;padding:12px 6px;background:#000;border:3px solid #3a342c;font:12px 'Rubik Mono One';color:#999}
+.seg2 div.on{border-color:#f5c542;color:#f5c542;box-shadow:0 4px 0 #000}
+.seg2 small{display:block;font:9px Oswald;letter-spacing:.1em;color:#777;margin-top:4px;text-transform:uppercase}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.days div{text-align:center;padding:10px 0;background:#000;border:2px solid #3a342c;font:11px 'Rubik Mono One';color:#777}
+.days div.on{background:#f5c542;color:#1a1200;border-color:#000}
+.num{display:flex;gap:6px}.num div{flex:1;text-align:center;padding:8px 0;background:#000;border:2px solid #3a342c;font:12px 'Rubik Mono One';color:#999}.num div.on{border-color:#f5c542;color:#f5c542}
+.wk{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:9px 10px;border-bottom:2px solid #1a1a1a}
+.wk .d{font:11px 'Rubik Mono One';color:#999;text-align:center}.wk .d small{display:block;font:9px Oswald;color:#666;letter-spacing:.08em}
+.wk .w{font:11px 'Rubik Mono One';color:#fff}.wk .w small{display:block;font:11px Inter;color:#888;margin-top:2px;text-transform:none}
+.wk .st{font:9px 'Rubik Mono One';padding:4px 7px;border:2px solid}
+.wk.today{background:rgba(245,197,66,.12);box-shadow:inset 4px 0 0 #f5c542}.wk.rest .w{color:#666}
+.st.done{color:#8ff08a;border-color:#49b84a}.st.miss{color:#ff8a8a;border-color:#c8322a}.st.now{color:#1a1200;background:#f5c542;border-color:#000}.st.next{color:#999;border-color:#3a342c}
+.hint{font:12px/1.45 Inter;color:#c9c3b6}
+</style></head><body>
+<h1>GymQuest — расписание на неделю</h1><div class="sub">Стиль, количество дней и дни недели → игра раскладывает тренировки по календарю.</div>
+<div class="row" id="phones"></div>
+<script src="figure.js?v=4"></script><script>
+
+const M = { today:['chest','triceps','front_delts','quads','glutes'], lagging:['lats','upper_back','calves'], load:{biceps:.6,forearms:.3,abs:.5,side_delts:.4,hamstrings:.5} };
+const fig = (b, o) => drawFigure(b, { gear:'street', ...o });
+const sunset = (h=812, top=0) => `<svg viewBox="0 0 375 ${h}" width="375" height="${h}" style="position:absolute;left:0;top:${top}px" xmlns="http://www.w3.org/2000/svg"><defs>
+<linearGradient id="sky${h}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2b1b4d"/><stop offset=".35" stop-color="#8a2d5e"/><stop offset=".6" stop-color="#e8692a"/><stop offset=".78" stop-color="#f7b733"/><stop offset=".8" stop-color="#1a1410"/><stop offset="1" stop-color="#0d0c0b"/></linearGradient>
+<radialGradient id="sun${h}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff0b0"/><stop offset=".6" stop-color="#f7b733"/><stop offset="1" stop-color="#f7b733" stop-opacity="0"/></radialGradient></defs>
+<rect width="375" height="${h}" fill="url(#sky${h})"/><circle cx="270" cy="${h*0.62}" r="80" fill="url(#sun${h})"/><circle cx="270" cy="${h*0.62}" r="46" fill="#ffd877"/>
+<g fill="#120d16">${[0,40,70,110,150,200,250,300,340].map((x,i)=>`<rect x="${x}" y="${h*0.78-20-(i%3)*18-(i%2)*10}" width="${30+(i%2)*18}" height="120"/>`).join('')}</g>
+<g fill="#0a0708"><path d="M40 ${h*0.8} q6 -90 -10 -150 l14 0 q10 60 8 150z"/><g transform="translate(36 ${h*0.8-150})">${[0,45,90,135,180,225,270,315].map(a=>`<ellipse rx="34" ry="8" transform="rotate(${a}) translate(26 0)"/>`).join('')}</g>
+<path d="M330 ${h*0.8} q-4 -110 14 -170 l12 0 q-12 60 -12 170z"/><g transform="translate(343 ${h*0.8-170})">${[0,45,90,135,180,225,270,315].map(a=>`<ellipse rx="38" ry="9" transform="rotate(${a}) translate(30 0)"/>`).join('')}</g></g>
+<rect y="${h*0.8}" width="375" height="${h*0.2}" fill="#0d0c0b"/><path d="M0 ${h*0.8} h375" stroke="#f7b733" stroke-width="2" opacity=".5"/></svg>`;
+const radarSvg = () => `<svg viewBox="0 0 112 112" width="100" height="100"><circle cx="56" cy="56" r="56" fill="#13331a"/>${[0,1,2,3].map(i=>`<circle cx="56" cy="56" r="${14+i*13}" fill="none" stroke="rgba(255,255,255,.12)"/>`).join('')}<path d="M56 4 V108 M4 56 H108" stroke="rgba(255,255,255,.12)"/><polygon points="56,14 88,40 92,70 56,96 20,80 24,34" fill="rgba(245,197,66,.35)" stroke="#f5c542" stroke-width="2"/><circle cx="56" cy="56" r="4" fill="#fff"/>
+<text x="56" y="10" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">ГРУДЬ</text><text x="98" y="46" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">РУКИ</text><text x="98" y="78" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">НОГИ</text><text x="56" y="108" font-size="8" fill="#ff9f1c" text-anchor="middle" font-family="Oswald">СПИНА</text><text x="14" y="86" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">КОР</text><text x="14" y="38" font-size="8" fill="#9be38a" text-anchor="middle" font-family="Oswald">ПЛЕЧИ</text></svg>`;
+const hud = (clock='17:49') => `<div class="hud"><div class="clock">${clock}</div><div class="money">$00003418</div><div class="lbl">тоннаж, кг</div>
+ <div class="bars"><div class="b"><i style="width:62%;background:#b4342c"></i></div><div class="b"><i style="width:74%;background:#e8e8e8"></i></div><div class="b"><i style="width:31%;background:#3a8fd6"></i></div></div><div class="lbl">respect · дисциплина · выносливость</div><div class="stars">★★★<b>★★</b></div></div>`;
+const tabs = (on) => `<div class="tabs">${[['👤','Герой'],['🏋️','Миссия'],['👥','Банда'],['📈','Статы'],['📟','Тренер']].map(([i,n],k)=>`<div class="${k===on?'on':''}"><i>${i}</i>${n}</div>`).join('')}</div>`;
+
+const setup = () => `<div class="scr">${sunset(300)}<div style="position:absolute;left:0;right:0;top:230px;bottom:0;background:#0d0c0b"></div><div class="halftone" style="opacity:.2"></div>
+ <div style="position:absolute;left:14px;top:12px"><div class="tag" style="font-size:30px;line-height:1">НЕДЕЛЯ</div><div style="margin-top:6px"><span class="stencil y">НАСТРОЙ РАСПИСАНИЕ</span></div></div>
+ ${hud()}
+ <div style="position:absolute;left:14px;right:14px;top:110px;display:grid;gap:12px">
+  <div class="pm"><div class="mono" style="font-size:10px;color:#f5c542;margin-bottom:8px">1. КАК ТРЕНИРУЕШЬСЯ</div>
+   <div class="seg2"><div>FULL BODY<small>всё тело каждый раз</small></div><div class="on">СПЛИТ<small>мышцы по дням</small></div></div></div>
+  <div class="pm"><div class="mono" style="font-size:10px;color:#f5c542;margin-bottom:8px">2. СКОЛЬКО РАЗ В НЕДЕЛЮ</div>
+   <div class="num"><div>2</div><div>3</div><div class="on">4</div><div>5</div><div>6</div></div>
+   <div class="hint" style="margin-top:8px">4 дня сплит → <b style="color:#f5c542">Верх / Низ</b>: каждая мышца 2 раза в неделю, силовой и объёмный день.</div></div>
+  <div class="pm"><div class="mono" style="font-size:10px;color:#f5c542;margin-bottom:8px">3. В КАКИЕ ДНИ</div>
+   <div class="days"><div class="on">ПН</div><div class="on">ВТ</div><div>СР</div><div class="on">ЧТ</div><div class="on">ПТ</div><div>СБ</div><div>ВС</div></div>
+   <div class="hint" style="margin-top:8px">Между тяжёлыми днями на одни мышцы — не меньше 48 часов. Расписание проверяет это само.</div></div>
+ </div>
+ <div style="position:absolute;left:14px;right:14px;bottom:80px"><div class="cta">СОХРАНИТЬ НЕДЕЛЮ</div></div>
+ ${tabs(1)}</div>`;
+const rows = [['ПН','27','Верх A · сила','жим, тяга, жим стоя','done'],['ВТ','28','Низ A · сила','присед, румынская','done'],['СР','29','Отдых','лёгкое кардио 20–30 мин по желанию','rest'],['ЧТ','30','Верх B · объём','наклонный жим, блоки, махи','now'],['ПТ','31','Низ B · объём','становая, болгарские выпады','next'],['СБ','1','Отдых','прогулка, растяжка','rest'],['ВС','2','Отдых','восстановление, сон 8+ ч','rest']];
+const week = () => `<div class="scr">${sunset(300)}<div style="position:absolute;left:0;right:0;top:230px;bottom:0;background:#0d0c0b"></div><div class="halftone" style="opacity:.2"></div>
+ <div style="position:absolute;left:14px;top:12px"><div class="tag" style="font-size:30px;line-height:1">НЕДЕЛЯ 2/6</div><div style="margin-top:6px"><span class="stencil y">СПЛИТ ВЕРХ / НИЗ · 4 ДНЯ</span></div></div>
+ ${hud()}
+ <div class="pm" style="position:absolute;left:14px;right:14px;top:110px;padding:0">
+  ${rows.map(([d,n,w,s,st])=>`<div class="wk ${st==='now'?'today':''} ${st==='rest'?'rest':''}"><div class="d">${d}<small>${n}</small></div><div class="w">${w}<small>${s}</small></div>${st==='done'?'<span class="st done">✓ ВЫПОЛНЕНО</span>':st==='now'?'<span class="st now">СЕГОДНЯ</span>':st==='next'?'<span class="st next">ПТ</span>':'<span style="color:#555;font-size:16px">☾</span>'}</div>`).join('')}
+ </div>
+ <div class="pm" style="position:absolute;left:14px;right:14px;top:560px">
+  <div style="display:flex;justify-content:space-between;align-items:center"><div><div class="mono" style="font-size:10px;color:#f5c542">НЕДЕЛЯ: 2 ИЗ 4</div><div class="hint" style="margin-top:4px">Пропустишь день — тренировка сдвинется на следующий, ничего не потеряется.</div></div></div>
+  <div style="height:10px;background:#1a1a1a;border:2px solid #000;margin-top:8px"><i style="display:block;height:100%;width:50%;background:#f5c542"></i></div>
+ </div>
+ <div style="position:absolute;left:14px;right:14px;bottom:80px;display:flex;gap:10px"><div class="cta dark" style="width:120px">ИЗМЕНИТЬ</div><div class="cta" style="flex:1">⚔️ ЗАДАНИЕ НА СЕГОДНЯ</div></div>
+ ${tabs(1)}</div>`;
+const rest = () => `<div class="scr">${sunset(300)}<div style="position:absolute;left:0;right:0;top:230px;bottom:0;background:#0d0c0b"></div><div class="halftone" style="opacity:.2"></div>
+ <div style="position:absolute;left:14px;top:12px"><div class="tag" style="font-size:30px;line-height:1">МИССИИ</div><div style="margin-top:6px"><span class="stencil y">СРЕДА · ДЕНЬ ОТДЫХА</span></div></div>
+ ${hud()}
+ <div style="position:absolute;left:14px;right:14px;top:110px;display:grid;gap:10px">
+  <div style="background:#000;border:3px solid #3a8fd6;box-shadow:0 4px 0 #000;padding:12px">
+   <div class="mono" style="font-size:10px;color:#8fd3ff">☾ СЕГОДНЯ ОТДЫХ</div>
+   <div class="mono" style="font-size:16px;color:#fff;margin-top:6px">ВОССТАНОВЛЕНИЕ</div>
+   <div class="hint" style="margin-top:8px">Мышцы растут на отдыхе. По желанию — 20–30 мин лёгкого кардио и растяжка. Белок 1,6–2 г/кг, сон 8 часов.</div>
+   <div class="hint" style="margin-top:8px;color:#8ff08a">Следующая миссия: <b>Верх B · объём</b> — завтра, чт</div>
+   <div style="display:flex;gap:8px;margin-top:10px"><div class="cta dark" style="flex:1;height:40px;font-size:10px">🏃 ЛЁГКОЕ КАРДИО</div><div class="cta dark" style="flex:1;height:40px;font-size:10px">ВСЁ РАВНО ТРЕНИРУЮСЬ</div></div>
+  </div>
+  <div class="pm" style="padding:0">${rows.slice(1,5).map(([d,n,w,s,st])=>`<div class="wk ${st==='rest'?'rest today':''}"><div class="d">${d}<small>${n}</small></div><div class="w">${w}</div>${st==='done'?'<span class="st done">✓</span>':st==='rest'?'<span class="st now">СЕГОДНЯ</span>':'<span class="st next">'+d+'</span>'}</div>`).join('')}</div>
+ </div>
+ ${tabs(1)}</div>`;
+const P = [['1 · Настройка недели', setup()], ['2 · Календарь недели', week()], ['3 · День отдыха в «Миссии»', rest()]];
+const only = new URLSearchParams(location.search).get('only');
+const host = document.getElementById('phones');
+P.forEach(([l, html], i) => { if (only && String(i + 1) !== only) return; host.insertAdjacentHTML('beforeend', `<div>${only ? '' : `<div class="label">${l}</div>`}<div class="phone" ${only ? 'style="border:0;border-radius:0;box-shadow:none"' : ''}>${html}</div></div>`); });
+if (only) { document.body.style.padding = '0'; document.querySelectorAll('h1,.sub').forEach(e => e.style.display = 'none'); }
+</script></body></html>

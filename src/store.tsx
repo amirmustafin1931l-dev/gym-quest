@@ -7,6 +7,7 @@ import { computeWorkoutXp, levelFromXp } from './lib/xp';
 import { muscleStatuses, type ExerciseMap } from './lib/stats';
 import { ACHIEVEMENT_MAP, evaluateAchievements } from './lib/achievements';
 import type { DayTask } from './lib/programs';
+import { programFor } from './lib/schedule';
 
 export type Action =
   | { type: 'hydrate'; state: AppState }
@@ -30,7 +31,8 @@ export type Action =
   | { type: 'coachMsg'; coach: CoachId; msg: ChatMsg; ifEmpty?: boolean }
   | { type: 'coachPlan'; plan: CoachPlan }
   | { type: 'startTask'; task: DayTask }
-  | { type: 'setProgram'; id: 'fullbody3' | 'upperlower4' | 'ppl' | null }
+  | { type: 'setProgram'; id: 'fullbody3' | 'upperlower4' | 'ppl' | 'ulppl' | null }
+  | { type: 'setSchedule'; style: 'fullbody' | 'split'; days: number[] }
   | { type: 'reset' };
 
 const reducer = (s: AppState, a: Action): AppState => {
@@ -113,8 +115,13 @@ const reducer = (s: AppState, a: Action): AppState => {
         draft: { id, date: new Date().toISOString(), entries, xp: 0, xpBreakdown: [], prs: [], task },
         coachPlans: t.coachDate ? s.coachPlans.map((p) => (p.date === t.coachDate ? { ...p, workoutId: id } : p)) : s.coachPlans };
     }
+    case 'setSchedule': {
+      const days = [...new Set(a.days)].filter((d) => d >= 0 && d <= 6).sort((x, y) => x - y);
+      const id = programFor(a.style, days.length);
+      return { ...s, schedule: { style: a.style, days }, program: { id, start: s.program?.id === id ? s.program.start : new Date().toISOString() } };
+    }
     case 'setProgram':
-      return { ...s, program: a.id ? { id: a.id, start: s.program?.id === a.id ? s.program.start : new Date().toISOString() } : undefined };
+      return { ...s, program: a.id ? { id: a.id, start: s.program?.id === a.id ? s.program.start : new Date().toISOString() } : undefined, schedule: a.id ? s.schedule : undefined };
     case 'reset': return { ...emptyState(), profile: { ...emptyState().profile, created: s.profile.created, name: s.profile.name, look: s.profile.look, gear: s.profile.gear } };
     default: return s;
   }

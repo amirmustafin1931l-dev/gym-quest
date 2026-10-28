@@ -196,3 +196,27 @@ details summary { cursor: pointer; list-style: none; } details summary::-webkit-
 .chat-input .send { width: 46px; height: 40px; background: linear-gradient(#f7c843, #d9930f); border: 2px solid #000; font-size: 16px; color: #1a1200; }
 .chips2 { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
 .chips2 button { font: 9px var(--f-mono); color: var(--gold); border: 2px solid var(--line); background: #000; padding: 6px 8px; text-transform: uppercase; }
+
+/* расписание */
+.seg2 { display: flex; gap: 8px; }
+.seg2 button { flex: 1; text-align: center; padding: 12px 6px; background: #000; border: 3px solid var(--line); font: 12px var(--f-mono); color: #999; text-transform: uppercase; }
+.seg2 button.on { border-color: var(--gold); color: var(--gold); box-shadow: 0 4px 0 #000; }
+.seg2 small { display: block; font: 9px var(--f-osw); letter-spacing: .1em; color: #777; margin-top: 4px; }
+.days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.days button { text-align: center; padding: 10px 0; background: #000; border: 2px solid var(--line); font: 11px var(--f-mono); color: #777; }
+.days button.on { background: var(--gold); color: #1a1200; border-color: #000; }
+.wk { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: center; padding: 9px 10px; border-bottom: 2px solid #1a1a1a; }
+.wk:last-child { border-bottom: 0; }
+.wk .d { font: 11px var(--f-mono); color: #999; text-align: center; }
+.wk .d small { display: block; font: 9px var(--f-osw); color: #666; letter-spacing: .08em; }
+.wk .w { font: 11px var(--f-mono); color: #fff; text-transform: uppercase; min-width: 0; }
+.wk .w small { display: block; font: 11px var(--f-body); color: #888; margin-top: 2px; text-transform: none; }
+.wk.today { background: rgba(245,197,66,.12); box-shadow: inset 4px 0 0 var(--gold); }
+.wk.rest .w { color: #666; }
+.wk .st { font: 9px var(--f-mono); padding: 4px 7px; border: 2px solid; text-transform: uppercase; white-space: nowrap; }
+.st.done { color: var(--green-2); border-color: var(--green); }
+.st.miss { color: #ff8a8a; border-color: var(--red); }
+.st.now { color: #1a1200; background: var(--gold); border-color: #000; }
+.st.next { color: #999; border-color: var(--line); }
+.moon { color: #555; font-size: 16px; }
+.rest-card { background: #000; border: 3px solid var(--blue); box-shadow: 0 4px 0 #000; padding: 12px; position: relative; z-index: 1; }

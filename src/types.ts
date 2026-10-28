@@ -110,7 +110,9 @@ export interface AppState {
   aiNotes: AiNote[];
   coachChats: Partial<Record<CoachId, ChatMsg[]>>;
   coachPlans: CoachPlan[];   // последние задания, новые в конце
-  program?: { id: 'fullbody3' | 'upperlower4' | 'ppl'; start: string };
+  program?: { id: 'fullbody3' | 'upperlower4' | 'ppl' | 'ulppl'; start: string };
+  /** расписание на неделю: стиль и дни (0 = понедельник … 6 = воскресенье) */
+  schedule?: { style: 'fullbody' | 'split'; days: number[] };
 }
 
 export interface WorkoutSummary {
